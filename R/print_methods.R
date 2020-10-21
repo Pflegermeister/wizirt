@@ -1,4 +1,16 @@
-print.irt <- function(x, type = 'tech'){
+#' Plot method for wizirt objects
+#'
+#' @description The plot method for wizirt objects.
+#' @param x an object returned from fit_wizirt().
+#' @param type Character. Must be 'tech' or 'desc'. See details for more information.
+#' @details type must be one of
+##' \itemize{
+##'  \item{"tech"}{A table of technical information from the estimation of the model}
+##'  \item{"desc"}{A table of summary information about the data and the estimated parameters.}
+##' }
+#' @method print wizirt
+#' @export
+print.wizirt <- function(x, type = 'tech'){
 
   if(type == 'tech'){
 

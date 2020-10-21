@@ -1,3 +1,12 @@
+#' Describe the model you will run
+#'
+#' @description irt() is used to describe a model, it must be used in conjunction with set_engine(), and fit_wizirt().
+#' @param mode Must be 'regression' currently.
+#' @param item_type Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.
+#' @param irt_pars Logical. Should the traditional IRT parametrization be used? If false the slope-intercept form is used.
+#' @param rownames Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).
+#' @param tol Numeric. Convergence criterion. Currently only implemented when engine is mirt.
+#' @export
 irt <- function(mode = "regression", item_type = NULL, irt_pars = TRUE, rownames = NULL, tol = 1e-5){
   args <- list(item_type = rlang::enquo(item_type),
                irt_pars = rlang::enquo(irt_pars),
@@ -12,10 +21,16 @@ irt <- function(mode = "regression", item_type = NULL, irt_pars = TRUE, rownames
   out
 }
 
+#' Run the irt model you described
+#'
+#' @description fit_wizirt() runs a model that has been built with irt() and set_engine().
+#' @param object An object from set_engine()
+#' @param data An Person x Items matrix or dataframe of dichotomous response values (e.g. correct/incorrect). Rows are persons and columns are items, one row per person, one column per item. No other information allowed.
+#' @param formula
+#' @export
 fit_wizirt <- #fit_wizirt.model_spec How do I get the fit_wizirt without the '.model_spec'?
   function(object,
            data,
-           formula = NULL, # This is for the eventual addition of covariates and multilevel. # But formula will also be used to specify which items to retain.
            control = parsnip:::control_parsnip(), # formula %>%  will be theta ~ items + covariates and # will remove items not wanted.
            ...
   ) {
@@ -32,8 +47,7 @@ fit_wizirt <- #fit_wizirt.model_spec How do I get the fit_wizirt without the '.m
     cl <- match.call(expand.dots = TRUE)
     eval_env <- rlang::env()
     eval_env$responses <- data
-    eval_env$formula <- formula
-    fit_interface <- check_wizirt_interface(eval_env$responses, cl, eval_env$formula) #xxxx check 9/24/2020 dependencies
+    fit_interface <- check_wizirt_interface(eval_env$responses, cl) #xxxx check 9/24/2020 dependencies
 
     # populate `method` with the details for this model type
     object <- parsnip:::add_methods(object, engine = object$engine)
@@ -59,7 +73,7 @@ fit_wizirt <- #fit_wizirt.model_spec How do I get the fit_wizirt without the '.m
     #rlang::abort(glue::glue("{interfaces} is unknown."))
 
     model_classes <- class(res$fit)
-    class(res) <- c(paste0("_", model_classes[1]), "irt", "model_fit")
+    class(res) <- c("wizirt", "model_fit", model_classes[1])
     res
   }
 
