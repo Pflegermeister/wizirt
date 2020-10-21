@@ -9,7 +9,7 @@ magrittr::`%>%`
 
 #' parsnip::set_engine
 #'
-#' @param engine Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.
+#' @param engine for set_engine(). Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.
 #' @importFrom parsnip set_engine
 #' @export
 parsnip::set_engine
