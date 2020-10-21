@@ -67,7 +67,7 @@ print.wizirt <- function(x, type = 'tech'){
   } else {
     rlang::abort(glue::glue('Print method "{type}" is not available.'))
   }
-  show(tab)
+
   return(tab)
 
 }
