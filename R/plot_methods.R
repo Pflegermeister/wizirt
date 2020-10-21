@@ -1,6 +1,7 @@
 #' Plot method for wizirt objects
 #'
 #' @description All plots in wizirt use ggplot2 as a backend. Type 'theta_diff' also uses gghalves. For the item-focused plots, the types can be included in the same string to overlay the plots (e.g. resid_trace).
+#' For large numbers of persons and/or items, you may want to consider limiting the number printed at a time on some plots.
 #' @param type Character string. Currently, can be 'trace' for item characteristic curves or 'info' for item information.
 #' 'obs', 'trace', 'info', 'resid', 'stand', 'tinfo', 'theta', 'diff', 'theta_diff', and 'np_prf'
 #' @param items Which items to plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to plot. If nothing is specifed all items will be plotted.

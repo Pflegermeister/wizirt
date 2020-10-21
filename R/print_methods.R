@@ -2,16 +2,21 @@
 #'
 #' @description The plot method for wizirt objects.
 #' @param x an object returned from fit_wizirt().
-#' @param type Character. Must be 'tech' or 'desc'. See details for more information.
+#' @param type Character. Must be 'tech', 'desc', 'na_item', 'na_person'. See details for more information.
 #' @details type must be one of
 ##' \itemize{
 ##'  \item{"tech"}{A table of technical information from the estimation of the model}
 ##'  \item{"desc"}{A table of summary information about the data and the estimated parameters.}
+##'  \item{"na_item"}{A table of the number and proportion of missing data for each item.}
+##'  \item{"na_person"}{A table of the number and proportion of missing data for each person.}
 ##' }
 #' @method print wizirt
 #' @export
 print.wizirt <- function(x, type = 'tech'){
 
+  if (!type %in% c('tech', 'desc', 'na_item', 'na_person')) {
+    rlang::abort(glue::glue('Print method "{type}" is not available.'))
+  }
   if(type == 'tech'){
 
     parms = c('package',
@@ -41,7 +46,8 @@ print.wizirt <- function(x, type = 'tech'){
     tab <- tibble::tibble(parameter = parms,
                    value = vals)
 
-  } else  if(type == 'desc'){
+  }
+  if(type == 'desc'){
     parms <- c('N Items',
                'Avg Difficulty',
                'Avg Diff (CTT)',
@@ -64,10 +70,59 @@ print.wizirt <- function(x, type = 'tech'){
     tab <- tibble::tibble(parameter = parms,
                    value = vals)
 
-  } else {
-    rlang::abort(glue::glue('Print method "{type}" is not available.'))
+  }
+  if(type == 'na_item') {
+    tab <- data.frame(cbind(count = colSums(is.na(x$fit$data)),
+                            prop = colMeans(is.na(x$fit$data)))) %>%
+      tibble::rownames_to_column('item') %>%
+      tibble::tibble()
+  }
+  if(type == 'na_person') {
+
+
+    tab <- tibble::tibble(person = x$fit$parameters$persons$ids,
+                          count = rowSums(is.na(x$fit$data)),
+                          prop = rowMeans(is.na(x$fit$data)))
   }
 
   return(tab)
+
+}
+
+#' Print method for wizirt item-fit objects
+#'
+#' @param x An object exported from irt_item_fit()
+#' @method print wizirt_ifa
+#' @export
+print.wizirt_ifa <- function(x){
+  x$item_stats
+}
+
+#' Print method for wizirt assumption objects
+#'
+#' @param x An object exported from irt_assume()
+#' @param type Character. One of 'all', 'ld', 'unid', 'rel', 'abs'. Default is 'all'.
+#' @method print wizirt_assume
+#' @export
+print.wizirt_assume <- function(x, type = 'all'){
+  if(type == 'all'){
+    return(dplyr::bind_rows(x$unidim %>% dplyr::rename(pars = 'stat'),
+                     x$rel_fit %>% dplyr::filter(!stat %in% c("N", "n_pars")) %>% dplyr::rename(pars = 'stat', value = 'values'),
+                     tibble::tibble(pars = c('Num LD pairs < .05'),
+                                    value = sum(assumptions$ld$pvals < .05))))
+  }
+  if(type == 'ld'){
+    return(x$ld)
+  }
+  if(type == 'unid'){
+    return(x$unidim)
+  }
+  if(type == 'rel'){
+    return(x$rel_fit)
+  }
+  if(type == 'abs'){
+    return(x$abs_fit)
+  }
+  rlang::abort(glue::glue('Uknown type argument: "{type}"'))
 
 }

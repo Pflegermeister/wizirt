@@ -57,7 +57,7 @@ irt_item_fit <- function(wizirt_fit, stats = c('X2')){
   out$item_information <- item_information
   out$item_probabilities <- item_probabilities
 
-  class(out) <- c(paste0("_", class(out)), "wizirt_ifa")
+  class(out) <- c("wizirt_ifa", class(out))
   out
 }
 
