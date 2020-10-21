@@ -7,6 +7,9 @@
 \alias{set_engine}
 \alias{set_mode}
 \title{Objects exported from other packages}
+\arguments{
+\item{engine}{Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.}
+}
 \keyword{internal}
 \description{
 These objects are imported from other packages. Follow the links
