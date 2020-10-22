@@ -115,11 +115,31 @@ print.wizirt_ifa <- function(x){
 #' @param x An object exported from irt_person_fit()
 #' @method print wizirt_pfa
 #' @param patterns Logical. Should the response patterns be printed as well?
+#' @param item_order A vector of item names or item positions specifying the order they should be printed in for the patterns. If NULL, items printed in the order they appear in the data. Can also be 'diff' to print patterns sorted by CTT difficulty.
 #' @export
-print.wizirt_pfa <- function(x, patterns = FALSE){
+print.wizirt_pfa <- function(x, patterns = FALSE, item_order = NULL){
   item_col = max(which(grepl("_cut", colnames(x$person_estimates)))) + 1
   if(patterns == TRUE){
-    return(tidyr::unite(x$person_estimates, pattern, item_col:ncol(x$person_estimates), sep = '') )
+    if(is.null(item_order)){
+      return(tidyr::unite(x$person_estimates, pattern, item_col:ncol(x$person_estimates), sep = '') )
+    }
+    if (all(item_order == 'by_diff')) {
+      item_order <- x$person_estimates %>%
+        dplyr::select(item_col:ncol(x$person_estimates)) %>%
+        colMeans(na.rm = T) %>%
+        sort(decreasing = T) %>% names()
+    } else {
+      item_order <- x$person_estimates %>%
+        dplyr::select(item_col:ncol(x$person_estimates)) %>%
+        dplyr::select(tidyselect::all_of(item_order)) %>% names()
+    }
+
+
+    return(tidyr::unite(x$person_estimates %>%
+                   dplyr::select(1:(item_col-1),
+                                 tidyselect::all_of(item_order)),
+                 pattern, item_col:ncol(x$person_estimates), sep = ''))
+
   } else {
     return(x$person_estimates[1:(item_col-1)])
   }
