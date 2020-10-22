@@ -56,7 +56,6 @@ plot.wizirt <- function(wizirt_fit,
 
     } else{
       p <- df %>%
-        dplyr::filter(item %in% items) %>%
         ggplot2::ggplot(ggplot2::aes(x = ability, y = value)) +
         ggplot2::geom_jitter(alpha = .5, cex = 2, width = 0, height = .05) +
         ggplot2::facet_wrap(~item)
