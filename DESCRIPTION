@@ -1,10 +1,11 @@
 Package: wizirt
 Type: Package
 Title: A United API for IRT
-Version: 0.0.1.0
+Version: 0.0.1.1
 Author: Isaac Pfleger
 Maintainer: Isaac Pfleger <isaac.pfleger@gmail.com>
-Description: This package provides wrapper functions to a number of other IRT packages to provide a more seamless experience. Currently only supports unidimensional, parametric, dichotomous models.
+Description: This package provides wrapper functions to a number of other IRT packages 
+to provide a more seamless experience. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
