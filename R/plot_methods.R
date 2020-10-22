@@ -9,6 +9,8 @@
 #' @param facets Logical. Should the plots be faceted? Default is TRUE.
 #' @param quads Numeric. For plots using residuals (i.e. resid, stand). How many quantiles should the data be broken into?
 #' @param return_data Logical. Should the plot data be returned. If TRUE returns a list with the plot and the data.
+#' @param pfa An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.
+#' @param  <-  An object from irt_item_fit(). If omitted, irt_item_fit() is called within the function with the default settings.
 #' @method plot wizirt
 #' @export
 plot.wizirt <- function(wizirt_fit,
@@ -17,7 +19,9 @@ plot.wizirt <- function(wizirt_fit,
                      persons = NULL,
                      facets = TRUE,
                      quads = 10,
-                     return_data = FALSE){
+                     return_data = FALSE,
+                     pfa = NULL,
+                     ifa = NULL){
 
   plt_data <- list()
   plt <- NULL
@@ -40,7 +44,10 @@ plot.wizirt <- function(wizirt_fit,
 
   if (grepl('obs', type)){
     plt <- 'obs'
-    pfa <- irt_person_fit(wizirt_fit, stat = 'Ht')
+    if(is.null(pfa)) {
+      pfa <- irt_person_fit(wizirt_fit, stat = 'Ht', items = items)
+    }
+
     df <- pfa$person_estimates %>%
       dplyr::select(ids, ability, tidyselect::all_of(items)) %>%
       tidyr::pivot_longer(cols = c(-ids, -ability), names_to = 'item') %>%
@@ -221,7 +228,9 @@ plot.wizirt <- function(wizirt_fit,
   }
 
   if (grepl('info', type) & !grepl('tinfo', type) ) {
-    ifa <- irt_item_fit(wizirt_fit)
+    if(is.null(ifa)) {
+      ifa <- irt_item_fit(wizirt_fit)
+    }
     df <- ifa$item_information
 
     plt_data[['info']] <- df %>%
@@ -262,7 +271,9 @@ plot.wizirt <- function(wizirt_fit,
   # Test Generally Plots
 
   if (type == 'tinfo') {
-    ifa <- irt_item_fit(wizirt_fit, stats = 'X2')
+    if(is.null(ifa)) {
+      ifa <- irt_item_fit(wizirt_fit)
+    }
     df <- ifa$item_information %>%
       dplyr::filter(item %in% items) %>%
       dplyr::group_by(theta) %>%
@@ -376,7 +387,9 @@ plot.wizirt <- function(wizirt_fit,
   # Person Plots
 
   if(grepl('np_prf', type)){
-    pfa <- irt_person_fit(wizirt_fit, stats = 'Ht', items = items)
+    if(is.null(pfa)) {
+      pfa <- irt_person_fit(wizirt_fit, stat = 'Ht', items = items)
+    }
     df <- pfa$prf %>%
       dplyr::filter(ids %in% persons)
     plt_data[['np_prf']] <- df

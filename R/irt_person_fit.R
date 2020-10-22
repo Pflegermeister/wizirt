@@ -3,14 +3,16 @@
 #' If there is missing data present, non-parametric imputation  will be done to get the cutoff for the measures.
 #' @param wizirt_fit An object coming from the fit_wizirt function.
 #' @param stats A character or character string identifying person-level fit measures. Default is "Ht". All of the stats in PerFit should be available. Let me know if any don't work. for more information.
-#' @param items Which items to plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to include. If nothing is specified all items are included.
+#' @param items Which items toe plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to include. If nothing is specified all items are included.
+#' @param level Numeric. What level of significance for the fit statistics? Currently only applies to Ht, lzstar, and U3
 #' @return A list with person-level statistics, person-response functions, data for person-response functions, and an empty slot for multi-level information that will be coming soon.
 #' @examples
 #' pfa <- wizirt2:::irt_person_fit(my_model)
 #' @export
 irt_person_fit <- function(wizirt_fit,
                            stats = c("Ht"),
-                           items = NULL
+                           items = NULL,
+                           level= .05
 ){
   out <- list(
     person_estimates = NULL,
@@ -32,22 +34,29 @@ irt_person_fit <- function(wizirt_fit,
     dplyr::select(which(items %in% items))
 
   # person_estimates...
-  stats_list = list()
-
+  stats_list <- list()
+  flagged <- list()
   for (i in stats){
     fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
                                         'IP = cbind(wizirt_fit$fit$parameters$coefficients[,2:3], guessing = 0),',
                                         'Ability = wizirt_fit$fit$parameters$persons$ability',
                                         ')')))
-    # Is this a good idea?
-    free_fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
-                                             'IP = cbind(wizirt_fit$fit$parameters$coefficients[,2:3], guessing = 0),',
-                                             'Ability = wizirt_fit$fit$parameters$persons$ability,',
-                                             'NA.method = "NPModel")')))
-    stats_list[[i]] <- fit$PFscores$PFscores
-    stats_list[[glue::glue('{i}_cut')]] <- PerFit::cutoff(free_fit)$Cutoff
 
-    # PerFit:::plot.PerFit(fit, PerFit::cutoff(fit)) # Having this in the output is kind of a duh thing, isn't it?
+    stats_list[[i]] <- fit$PFscores$PFscores
+    if(!i %in% c('Ht', 'U3', 'lzstar')){
+      next
+    }
+    if(i %in% c('U3')){
+      cut_off <- quantile(stats_list[[i]], 1-level)
+    } else if (i %in% c('lzstar')) {
+      cut_off <- qnorm(level)
+    } else  if (i %in% c('Ht')) {
+      cut_off <- quantile(stats_list[[i]], level)
+    }
+
+    stats_list[[glue::glue('{i}_cut')]] <- cut_off
+    flagged[[i]] <- sapply(fit$PFscores$PFscores, function(x) ifelse(i == 'Ht', x < cut_off, x > cut_off))
+
   }
   # Ht < cut = bad
   # U3 > cut = bad
@@ -57,13 +66,12 @@ irt_person_fit <- function(wizirt_fit,
   out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
                                                    tibble::as_tibble(stats_list),
                                                    df))
-  flagged = out$person_estimates$Ht < out$person_estimates$Ht_cut
-  # prf... this isn't working xxxx
+  flagged = (dplyr::bind_rows(flagged) %>% dplyr::rowwise() %>% rowSums()) > 0
 
-  # the gg_prf function will need to be adapted to make parametric prfs.
+
   out$prf <- gg_prf(df,
-                    flagged = flagged, # I want to add a different color for aberrant folks
-                    examinees = 1:nrow(df),# I need to add a place for examinee ids to be inserted in IRT so I have them here xxxx
+                    flagged = flagged,
+                    examinees = wizirt_fit$fit$parameters$persons$ids,
                     h = 0.09,
                     N.FPts = 30,
                     alpha = 0.05,

@@ -11,17 +11,17 @@ irt_model_pfa <- function(wizirt_fit, pfa = NULL, predictors = NULL, bins = 5){
   }
   # prepare mlm_data function here
 
-  mlm_data <- compile_mlm_data(wizirt_fit = wizirt_fit, pfa = pfa, predictors = predictors)
+  mlm_data <- compile_mlm_data(wizirt_fit = wizirt_fit, pfa = pfa, predictors = predictors, bins = bins)
 
     mod_list <- list()
-    for (i in stats){
+    for (i in pfa$spec$stats){
       mod_list[[i]] <- eval(parse(text = glue::glue('blme::blmer(',
                                                     '{i} ~',
                                                     '(1|ids) + .,',
                                                     'data = mlm_data)')))
 
 
-    out <- list(icc = sapply(mod_list, performance::icc), models = mod_list) %>% `class<-`(c('pfa_mlm', class(out)))
+    out <- list(icc = sapply(mod_list, performance::icc), models = mod_list) %>% `class<-`(c('pfa_mlm', class(.)))
     return(out)
   }
 }
@@ -49,7 +49,7 @@ pfa_fit_subset <- function(bin, data = mlm_data, stats = pfa$spec$stats){
   }
 
   tibble::as_tibble(stats_list) %>%
-    dplyr::mutate(ids = unique(mlm_data$ids), bin = bin)
+    dplyr::mutate(ids = unique(data$ids), bin = bin)
 
 }
 
@@ -62,7 +62,7 @@ get_bins <- function(wizirt_fit, bins){
 }
 
 # predictors A named list of vectors or a data frame of pred
-compile_mlm_data <- function(wizirt_fit, pfa, predictors = NULL){
+compile_mlm_data <- function(wizirt_fit, pfa, predictors = NULL, bins = bins){
   out <- pfa$person_estimates %>%
     tidyr::pivot_longer(cols = colnames(wizirt_fit$fit$data), names_to = 'item') %>%
     dplyr::left_join(wizirt_fit$fit$parameters$coefficients, by = 'item')

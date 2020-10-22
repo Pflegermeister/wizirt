@@ -1,10 +1,14 @@
 # wizirt <img src="man/figures/logo.png" align="right" height = "100"/>
 
+Generally, missing data are handled using full 
+information during estimation. Additional functions for item and person fit tend to use 
+list wise deletion or pairwise information when possible.  Currently only supports 
+unidimensional, parametric, dichotomous models.
 
-The wizirt package (currently named wizirt2) is up and running. To
+The wizirt package (currently named wizirt) is up and running. To
 install it, use
 
-    devtools::install_github('Pflegermeister/wizirt2')
+    devtools::install_github('Pflegermeister/wizirt')
 
 The wizirt package represents the work of my dissertation. As such I
 have agreed to do the following for the first round of development. I
