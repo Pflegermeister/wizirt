@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{an object returned from fit_wizirt().}
 
-\item{type}{Character. Must be 'tech' or 'desc'. See details for more information.}
+\item{type}{Character. Must be 'tech', 'desc', 'na_item', 'na_person'. See details for more information.}
 }
 \description{
 The plot method for wizirt objects.
@@ -19,5 +19,9 @@ type must be one of
 \itemize{
  \item{"tech"}{A table of technical information from the estimation of the model}
  \item{"desc"}{A table of summary information about the data and the estimated parameters.}
+ \item{"na_item"}{A table of the number and proportion of missing data for each item.}
+ \item{"na_person"}{A table of the number and proportion of missing data for each person.}
+ \item{"item"}{A table of item statistics.}
+ \item{"person"}{A table of person statistics.}
 }
 }

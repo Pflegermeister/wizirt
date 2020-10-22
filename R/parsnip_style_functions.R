@@ -26,7 +26,6 @@ irt <- function(mode = "regression", item_type = NULL, irt_pars = TRUE, rownames
 #' @description fit_wizirt() runs a model that has been built with irt() and set_engine().
 #' @param object An object from set_engine()
 #' @param data An Person x Items matrix or dataframe of dichotomous response values (e.g. correct/incorrect). Rows are persons and columns are items, one row per person, one column per item. No other information allowed.
-#' @param formula
 #' @export
 fit_wizirt <- #fit_wizirt.model_spec How do I get the fit_wizirt without the '.model_spec'?
   function(object,

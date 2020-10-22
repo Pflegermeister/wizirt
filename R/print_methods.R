@@ -9,6 +9,8 @@
 ##'  \item{"desc"}{A table of summary information about the data and the estimated parameters.}
 ##'  \item{"na_item"}{A table of the number and proportion of missing data for each item.}
 ##'  \item{"na_person"}{A table of the number and proportion of missing data for each person.}
+##'  \item{"item"}{A table of item statistics.}
+##'  \item{"person"}{A table of person statistics.}
 ##' }
 #' @method print wizirt
 #' @export
@@ -84,6 +86,16 @@ print.wizirt <- function(x, type = 'tech'){
                           count = rowSums(is.na(x$fit$data)),
                           prop = rowMeans(is.na(x$fit$data)))
   }
+  if(type == 'person') {
+
+
+    tab <- x$fit$parameters$persons
+  }
+  if(type == 'item') {
+
+
+    tab <- x$fit$parameters$coefficients
+  }
 
   return(tab)
 
@@ -96,6 +108,22 @@ print.wizirt <- function(x, type = 'tech'){
 #' @export
 print.wizirt_ifa <- function(x){
   x$item_stats
+}
+
+#' Print method for wizirt item-fit objects
+#'
+#' @param x An object exported from irt_person_fit()
+#' @method print wizirt_pfa
+#' @param patterns Logical. Should the response patterns be printed as well?
+#' @export
+print.wizirt_pfa <- function(x, patterns = FALSE){
+  item_col = max(which(grepl("_cut", colnames(x$person_estimates)))) + 1
+  if(patterns == TRUE){
+    return(tidyr::unite(x$person_estimates, pattern, item_col:ncol(x$person_estimates), sep = '') )
+  } else {
+    return(x$person_estimates[1:(item_col-1)])
+  }
+
 }
 
 #' Print method for wizirt assumption objects

@@ -10,7 +10,6 @@
 #' @param quads Numeric. For plots using residuals (i.e. resid, stand). How many quantiles should the data be broken into?
 #' @param return_data Logical. Should the plot data be returned. If TRUE returns a list with the plot and the data.
 #' @method plot wizirt
-#' @export plot.irt
 #' @export
 plot.wizirt <- function(wizirt_fit,
                      type = 'tinfo',
@@ -265,7 +264,7 @@ plot.wizirt <- function(wizirt_fit,
 
   if (type == 'tinfo') {
     ifa <- irt_item_fit(wizirt_fit, stats = 'X2')
-    df <- ifa$item_information%>%
+    df <- ifa$item_information %>%
       dplyr::filter(item %in% items) %>%
       dplyr::group_by(theta) %>%
       dplyr::summarize(info = sum(info), .groups = 'drop_last')
@@ -279,8 +278,9 @@ plot.wizirt <- function(wizirt_fit,
         ggplot2::labs(title = 'Test Information Function')
   }
 
-  if (type == 'theta') {
-    df <- wizirt_fit$fit$parameters$persons
+  if (type == 'theta'| grepl('theta', type) & grepl('SE', type)) {
+    df <- wizirt_fit$fit$parameters$persons  %>%
+      dplyr::filter(ids %in% persons)
     plt_data[['theta']] <- df
 
     if (is.null(plt)) {
@@ -299,6 +299,26 @@ plot.wizirt <- function(wizirt_fit,
                                      color = '#130d42', data = df)
     }
   }
+
+  if (type == 'SE'| grepl('theta', type) & grepl('SE', type)) {
+    df <- wizirt_fit$fit$parameters$persons %>%
+      dplyr::filter(ids %in% persons)
+    plt_data[['SE']] <- df
+
+    if (is.null(plt)) {
+      plt <- 'SE'
+
+      p <- df %>%
+        ggplot2::ggplot(ggplot2::aes(x = ability, y = std_err)) +
+        ggplot2::geom_line() +
+        ggplot2::labs(title = 'Standard Error of Measured Abilities')
+    } else {
+      plt <- paste(plt, 'SE', sep = '_')
+      p <- p + ggplot2::geom_line(ggplot2::aes(x = ability, y = std_err), lty = 2, data = df) +
+        ggplot2::labs(subtitle = 'Black dotted line is SE')
+    }
+  }
+
   if (type == 'diff') {
     df <- wizirt_fit$fit$parameters$coefficients[,1:2]
     plt_data[['diff']] <- df %>%

@@ -14,7 +14,8 @@ irt_item_fit <- function(wizirt_fit, stats = c('X2')){
 
   out <- list(item_stats = NULL,
               item_information = NULL,
-              item_probabilities = NULL)
+              item_probabilities = NULL,
+              spec = list(stats = stats))
 
   # Item_stats ---------------------------------------------------------------------------------------
   # If anyone tries to use groups this won't work. xxxx
