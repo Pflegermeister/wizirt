@@ -15,7 +15,8 @@ irt_mirt <- function(data,
                                 method = NULL,
                                 criteria = NULL,
                                 iterations = NULL,
-                                log_lik = NULL),
+                                log_lik = NULL,
+                                df = get_df(item_type, data)),
               parameters = list(
                 coefficients = NULL,
                 persons = NULL
