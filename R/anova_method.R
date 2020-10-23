@@ -25,40 +25,25 @@ anova.wizirt <- function(x, y = NULL){
       y <- temp
     }
   }
+  df <- x$fit$estimation$df - y$fit$estimation$df
 
   stats1 <- irt_fit_stats(x)
   stats1 <- stats1 %>% tidyr::pivot_wider(names_from = stat, values_from = values)
   stats2 <- irt_fit_stats(y)
   stats2 <- stats2 %>% tidyr::pivot_wider(names_from = stat, values_from = values)
 
-  L0 <- x$fit$estimation$log_lik
-  L1 <- y$fit$estimation$log_lik
-  LRT <- - 2 * (L0 - L1)
+  X2 <- 2*stats1$log_lik[1] - 2*stats2$log_lik[1]
 
-  if (LRT < 0){
-    warning("either the two models are not nested or the model represented by 'object2' fell on a local maxima.\n")
-    }
-
-  if(verbose){
-    cat('\nModel 1: ')
-    print(object$fit$model$engine$call)
-    cat('Model 2: ')
-    print(object2$fit$model$engine$call)
-    cat('\n')
-  }
-
-
-  X2 <- 2*stats1$log_lik[0] - 2*stats2$log_lik[0]
-
-    ret <- data.frame(AIC = c(stats1$AIC[0], stats2$AIC[0]),
-                      AICc = c(stats1$AICc[0], stats2$AICc[0]),
-                      SABIC = c(stats1$SABIC[0], stats2$SABIC[0]),
-                      HQ = c(stats1$HQ[0], stats2$HQ[0]),
-                      BIC = c(stats1$BIC[0], stats2$BIC[0]),
-                      logLik = c(stats1$log_lik[0], stats2$log_lik[0]),
+    ret <- data.frame(AIC = c(stats1$AIC[1], stats2$AIC[1]),
+                      AICc = c(stats1$AICc[1], stats2$AICc[1]),
+                      SABIC = c(stats1$SABIC[1], stats2$SABIC[1]),
+                      HQ = c(stats1$HQ[1], stats2$HQ[1]),
+                      BIC = c(stats1$BIC[1], stats2$BIC[1]),
+                      logLik = c(stats1$log_lik[1], stats2$log_lik[1]),
                       X2 = c(NaN, X2),
                       df = c(NaN, abs(df)),
-                      p = c(NaN, 1 - pchisq(X2,abs(df))))
+                      p = c(NaN, 1 - pchisq(X2,abs(df))),
+                      call = c(x$fit$model$engine$call, y$fit$model$engine$call))
 
 
   ret
