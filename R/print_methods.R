@@ -15,10 +15,7 @@
 #' @method print wizirt
 #' @export
 print.wizirt <- function(x, type = 'tech'){
-
-  if (!type %in% c('tech', 'desc', 'na_item', 'na_person')) {
-    rlang::abort(glue::glue('Print method "{type}" is not available.'))
-  }
+  tab <- NULL
   if(type == 'tech'){
 
     parms = c('package',
@@ -96,7 +93,7 @@ print.wizirt <- function(x, type = 'tech'){
 
     tab <- x$fit$parameters$coefficients
   }
-
+  if (is.null(tab)) rlang::abort(glue::glue('Print method "{type}" is not available.'))
   return(tab)
 
 }
