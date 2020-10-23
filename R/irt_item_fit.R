@@ -1,7 +1,7 @@
 #' A function used to get additional item-level information, such as ICC probabilities, and item information.
 #'
 #' @param wizirt_fit An object coming from the fit_wizirt function.
-#' @param stats A character or character string identifying item-level fit measures. Must be one of c('Zh', 'X2', 'G2', 'infit'). More are coming very soon.  Default is 'X2'.
+#' @param stats A character or character string identifying item-level fit measures. Must be at least one of c('Zh', 'X2', 'G2', 'infit'). More are coming very soon.  Default is 'X2'.
 #' @return A list with item_stats (item-level statistics), item_information (data for item and test information), and item_probabilities (data for ICC curves).
 #' @examples
 #' ifa <- wizirt2:::irt_item_fit(my_model)
