@@ -12,14 +12,14 @@ anova.wizirt <- function(x, y = NULL){
     return(ret)
   }
 
-  df <- x$estimation$df - y$estimation$df
+  df <- x$fit$estimation$df - y$fit$estimation$df
 
   if(df < 0){
     temp <- x
     x <- y
     y <- temp
   } else if(df == 0){
-    if((2*y@Fit$logLik - 2*x@Fit$logLik) < 0){
+    if((2*y$fit$estimation$log_lik - 2*x$fit$estimation$log_lik) < 0){
       temp <- x
       x <- y
       y <- temp
@@ -73,5 +73,6 @@ get_df <- function(item_type, data){
     df <- ncol(data) * 2
   if(item_type == '3PL')
     df <- ncol(data) * 3
+  df
 }
 
