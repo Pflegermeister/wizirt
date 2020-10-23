@@ -1,5 +1,5 @@
 <center>
-![](pkgdown/favicon/apple-touch-icon-180x180.png)
+<img src="pkgdown/favicon/apple-touch-icon-180x180.png" style="width:12.0%" />
 </center>
 
 The wizirt package is up and running. To install it, use
