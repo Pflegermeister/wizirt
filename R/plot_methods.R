@@ -44,11 +44,8 @@ plot.wizirt <- function(wizirt_fit,
 
   if (grepl('obs', type)){
     plt <- 'obs'
-    if(is.null(pfa)) {
-      pfa <- irt_person_fit(wizirt_fit, stat = 'Ht', items = items)
-    }
 
-    df <- pfa$person_estimates %>%
+    df <- dplyr::bind_cols(wizirt_fit$fit$parameters$persons, wizirt_fit$fit$data) %>%
       dplyr::select(ids, ability, tidyselect::all_of(items)) %>%
       tidyr::pivot_longer(cols = c(-ids, -ability), names_to = 'item') %>%
       dplyr::filter(item %in% items, ids %in% persons)

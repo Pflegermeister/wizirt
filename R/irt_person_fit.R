@@ -47,11 +47,11 @@ irt_person_fit <- function(wizirt_fit,
       next
     }
     if(i %in% c('U3')){
-      cut_off <- quantile(stats_list[[i]], 1-level)
+      cut_off <- quantile(stats_list[[i]], 1-level, na.rm = T)
     } else if (i %in% c('lzstar')) {
       cut_off <- qnorm(level)
     } else  if (i %in% c('Ht')) {
-      cut_off <- quantile(stats_list[[i]], level)
+      cut_off <- quantile(stats_list[[i]], level, na.rm = T)
     }
 
     stats_list[[glue::glue('{i}_cut')]] <- cut_off
