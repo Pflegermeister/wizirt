@@ -4,12 +4,14 @@
 \alias{print.wizirt_pfa}
 \title{Print method for wizirt item-fit objects}
 \usage{
-\method{print}{wizirt_pfa}(x, patterns = FALSE)
+\method{print}{wizirt_pfa}(x, patterns = FALSE, item_order = NULL)
 }
 \arguments{
 \item{x}{An object exported from irt_person_fit()}
 
 \item{patterns}{Logical. Should the response patterns be printed as well?}
+
+\item{item_order}{A vector of item names or item positions specifying the order they should be printed in for the patterns. If NULL, items printed in the order they appear in the data. Can also be 'diff' to print patterns sorted by CTT difficulty.}
 }
 \description{
 Print method for wizirt item-fit objects

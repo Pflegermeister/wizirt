@@ -11,7 +11,9 @@
   persons = NULL,
   facets = TRUE,
   quads = 10,
-  return_data = FALSE
+  return_data = FALSE,
+  pfa = NULL,
+  ifa = NULL
 )
 }
 \arguments{
@@ -27,6 +29,10 @@
 \item{quads}{Numeric. For plots using residuals (i.e. resid, stand). How many quantiles should the data be broken into?}
 
 \item{return_data}{Logical. Should the plot data be returned. If TRUE returns a list with the plot and the data.}
+
+\item{pfa}{An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.}
+
+\item{<-}{An object from irt_item_fit(). If omitted, irt_item_fit() is called within the function with the default settings.}
 }
 \description{
 All plots in wizirt use ggplot2 as a backend. Type 'theta_diff' also uses gghalves. For the item-focused plots, the types can be included in the same string to overlay the plots (e.g. resid_trace).

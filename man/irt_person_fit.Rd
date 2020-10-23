@@ -4,14 +4,16 @@
 \alias{irt_person_fit}
 \title{A function used to get additional person-level information, such as person-level fit measures and person response functions. I accidentally output plots in addition to data in one part. That will be moved to a plot method later.}
 \usage{
-irt_person_fit(wizirt_fit, stats = c("Ht"), items = NULL)
+irt_person_fit(wizirt_fit, stats = c("Ht"), items = NULL, level = 0.05)
 }
 \arguments{
 \item{wizirt_fit}{An object coming from the fit_wizirt function.}
 
 \item{stats}{A character or character string identifying person-level fit measures. Default is "Ht". All of the stats in PerFit should be available. Let me know if any don't work. for more information.}
 
-\item{items}{Which items to plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to include. If nothing is specified all items are included.}
+\item{items}{Which items toe plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to include. If nothing is specified all items are included.}
+
+\item{level}{Numeric. What level of significance for the fit statistics? Currently only applies to Ht, lzstar, and U3}
 }
 \value{
 A list with person-level statistics, person-response functions, data for person-response functions, and an empty slot for multi-level information that will be coming soon.
