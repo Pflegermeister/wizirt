@@ -3,6 +3,8 @@
 #' Function to make ANOVA comparisons for wizirt models. If only one model
 #' @param x An object of class wizirt (i.e. from fit_wizirt).
 #' @param y An object of class wizirt (i.e. from fit_wizirt).
+#' @method anova wizirt
+#' @export
 anova.wizirt <- function(x, y = NULL){
   if(is.null(y)){
     ret <- irt_fit_stats(x)

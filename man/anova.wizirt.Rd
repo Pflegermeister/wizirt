@@ -4,7 +4,7 @@
 \alias{anova.wizirt}
 \title{ANOVA method for wizirt objects}
 \usage{
-anova.wizirt(x, y = NULL)
+\method{anova}{wizirt}(x, y = NULL)
 }
 \arguments{
 \item{x}{An object of class wizirt (i.e. from fit_wizirt).}
