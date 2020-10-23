@@ -62,5 +62,14 @@ anova.wizirt <- function(x, y = NULL){
   ret
   }
 
-
+get_df <- function(item_type, data){
+  if(item_type == 'Rasch')
+    df <- ncol(data)
+  if(item_type == '1PL')
+    df <- ncol(data) + 1
+  if(item_type == '2PL')
+    df <- ncol(data) * 2
+  if(item_type == '3PL')
+    df <- ncol(data) * 3
+}
 
