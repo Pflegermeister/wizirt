@@ -73,7 +73,7 @@ to_mirt <- function(wizirt_fit){
   fd <- fd[,as.vector(rbind(1:ncol(wizirt_fit$fit$data), (ncol(wizirt_fit$fit$data)+1):ncol(fd)))]
   fd <- `colnames<-`(matrix(fd, ncol = ncol(fd)), colnames(fd))
 
-  Call = wizirt_fit$fit$model$engine$call
+  Call = wizirt_fit$fit$model$engine$call %>% `class<-`("call")
 
   Data = list(data = data.frame(wizirt_fit$fit$data),
               group = factor(rep("all", nrow(wizirt_fit$fit$data)), levels = "all", labels = 1),
