@@ -26,9 +26,11 @@ irt_mirt <- function(data,
   if ( item_type == '1PL'){
     model <- mirt::mirt.model(glue::glue('F1 = 1-{ncol(data)} \n',
                                 'CONSTRAIN =(1-{ncol(data)},a1)'))
-    mirt_model <- mirt::mirt(data, model = model, itemtype = '2PL', verbose = F, TOL = tol, SE = T)
+    mirt_model <- mirt::mirt(data, model = model, itemtype = '2PL',
+                             verbose = F, TOL = tol, SE = T)
   } else if (item_type %in% c('Rasch', '2PL', '3PL')){
-    mirt_model <- mirt::mirt(data, model = 1, itemtype = item_type, verbose = F, TOL = tol, SE = T)
+    mirt_model <- mirt::mirt(data, model = 1, itemtype = item_type,
+                             verbose = F, TOL = tol, SE = T)
   }
 
   # Standardizing mirt
@@ -38,7 +40,10 @@ irt_mirt <- function(data,
   out$model$engine$pkg = 'mirt'
   out$model$engine$ver = packageVersion('mirt')
   out$model$engine$func = 'mirt'
-  out$model$engine$call = mirt_model@Call
+  out$model$engine$call = glue::glue(gsub('tol', '{tol}',
+                                          gsub('item_type', '"{item_type}"',
+                                               paste0(trimws(capture.output(mirt_model@Call)),
+                                                      collapse = " "))))
 
   out$model$n_factors = 1
   out$model$item_type = item_type
