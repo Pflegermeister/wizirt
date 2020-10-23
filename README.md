@@ -1,13 +1,6 @@
-wizirt 0.0.0.0
-==============
-
-Major Changes
--------------
-
-Generally, missing data are handled using full information during
-estimation. Additional functions for item and person fit tend to use
-list wise deletion or pairwise information when possible. Currently only
-supports unidimensional, parametric, dichotomous models.
+<center>
+![](pkgdown/favicon/apple-touch-icon-180x180.png)
+</center>
 
 The wizirt package is up and running. To install it, use
 
@@ -133,7 +126,13 @@ That will come in the future.
     ## 10     10     0     0
     ## # ... with 65 more rows
 
--   Description of missing data handling (not yet implemented, xxxx)
+-   Description of missing data handling
+
+Generally, missing data are handled using full information during
+estimation. Additional functions for item and person fit tend to use
+list wise deletion or pairwise information when possible. Currently only
+supports unidimensional, parametric, dichotomous models. Better detail
+in documentation forthcoming.
 
 -   Provide model fit information
 
