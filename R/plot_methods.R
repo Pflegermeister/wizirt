@@ -331,7 +331,7 @@ plot.wizirt <- function(wizirt_fit,
 
   if (type == 'diff') {
     df <- wizirt_fit$fit$parameters$coefficients[,1:2]
-    plt_data[['diff']] <- df %>%
+    plt_data[['diff']] <- df %>% dplyr::filter(item %in% items)
 
     if (is.null(plt)) {
       plt <- 'diff'
