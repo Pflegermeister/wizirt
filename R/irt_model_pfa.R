@@ -22,8 +22,8 @@ irt_model_pfa <- function(wizirt_fit, pfa = NULL, predictors = NULL, bins = 5){
 
 
     out <- list(icc = sapply(mod_list, performance::icc), models = mod_list) %>% `class<-`(c('pfa_mlm', class(.)))
+    }
     return(out)
-  }
 }
 
 
