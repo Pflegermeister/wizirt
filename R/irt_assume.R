@@ -74,7 +74,7 @@ irt_fit_stats <- function(wizirt_fit){
 
   N <- nrow(wizirt_fit$fit$data)
   logLik <- wizirt_fit$fit$estimation$log_lik
-  tmp <- ncol(wizirt_fit$fit$data)
+  tmp <- my_model$fit$estimation$df
 
   AIC <- (-2) * logLik + 2 * tmp
 
