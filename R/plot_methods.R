@@ -316,7 +316,7 @@ plot.wizirt <- function(wizirt_fit,
 
       p <- df %>%
         ggplot2::ggplot(ggplot2::aes(x = ability, ymax = std_err)) +
-        ggplot2::geom_ribbon(ymin = 0, color = '#566D81', alpha = .5) +
+        ggplot2::geom_ribbon(ymin = 0, fill = '#566D81', alpha = .5) +
         ggplot2::labs(title = 'Standard Error of Measured Abilities')
     } else {
       plt <- paste(plt, 'SE', sep = '_')
@@ -471,7 +471,7 @@ plot.wizirt <- function(wizirt_fit,
 #' @param persons_per Numeric. How many persons to plot per page?
 #' @export
 plot_wrap <- function(object, type, items_per = NULL, persons_per = NULL){
-
+  p <- list()
   rem <- ifelse(is.null(items_per),
                 nrow(object$fit$data)%/%persons_per,
                 ncol(object$fit$data)%/%items_per)
@@ -480,15 +480,16 @@ plot_wrap <- function(object, type, items_per = NULL, persons_per = NULL){
   } else{
     if (!is.null(items_per)){
       for( i in seq_len(rem+1)){
-        print(plot(object, type = type, items = seq_len(items_per) + items_per*(i-1)))
+        p[[i]] <- plot(object, type = type, items = seq_len(items_per) + items_per*(i-1))
       }
     } else {
       for( i in seq_len(rem+1)){
-        print(plot(object, type = type, persons = seq_len(persons_per) + persons_per*(i-1)))
+        p[[i]] <- plot(object, type = type, persons = seq_len(persons_per) + persons_per*(i-1))
       }
     }
 
   }
+  return(p)
 }
 
 
