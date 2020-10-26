@@ -429,6 +429,7 @@ plot.wizirt <- function(wizirt_fit,
     assumptions <- irt_assume(wizirt_fit)
     df <- assumptions$ld %>%
       tidyr::pivot_longer(cols = item_1:item_2, values_to = 'item') %>%
+      dplyr::filter(item %in% items) %>%
       dplyr::mutate(name2 = dplyr::case_when(name == 'item_1' ~ 'item_2',
                                              T ~ 'item_1') ) %>%
       tidyr::pivot_longer(cols = c(name, name2)) %>%
@@ -449,9 +450,11 @@ plot.wizirt <- function(wizirt_fit,
   }
   if (type == 'ld'){
     assumptions <- irt_assume(wizirt_fit)
-    plt_data[['ld']] <- assumptions$ld
+    df <- assumptions$ld %>%
+      dplyr::filter(item_1 %in% items, item_2 %in% items)
+    plt_data[['ld']] <- df
 
-    p <- assumptions$ld %>%
+    p <- df %>%
       tidyr::pivot_longer(cols = item_1:item_2, values_to = 'item') %>%
       ggplot2::ggplot(ggplot2::aes(x = LD, y = item)) +
       ggplot2::geom_boxplot(fill = "#566D81", alpha = .8) +
