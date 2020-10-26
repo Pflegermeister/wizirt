@@ -315,8 +315,8 @@ plot.wizirt <- function(wizirt_fit,
       plt <- 'SE'
 
       p <- df %>%
-        ggplot2::ggplot(ggplot2::aes(x = ability, y = std_err)) +
-        ggplot2::geom_line() +
+        ggplot2::ggplot(ggplot2::aes(x = ability, ymax = std_err)) +
+        ggplot2::geom_ribbon(ymin = 0, color = '#566D81', alpha = .5) +
         ggplot2::labs(title = 'Standard Error of Measured Abilities')
     } else {
       plt <- paste(plt, 'SE', sep = '_')
