@@ -2,8 +2,7 @@
 #'
 #' @description All plots in wizirt use ggplot2 as a backend. Type 'theta_diff' also uses gghalves. For the item-focused plots, the types can be included in the same string to overlay the plots (e.g. resid_trace).
 #' For large numbers of persons and/or items, you may want to consider limiting the number printed at a time on some plots.
-#' @param type Character string. Currently, can be 'trace' for item characteristic curves or 'info' for item information.
-#' 'obs', 'trace', 'info', 'resid', 'stand', 'tinfo', 'theta', 'diff', 'theta_diff', and 'np_prf'
+#' @param type Character. Currently, can be 'obs', 'trace', 'info', 'resid', 'stand', 'tinfo', 'theta', 'diff', 'theta_diff', 'np_prf', 'ld', or 'ld_pairs'.
 #' @param items Which items to plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to plot. If nothing is specifed all items will be plotted.
 #' @param persons Which persons to plot? Either a numeric vector of person positions in the row names of the data, or a vector of the person ids to plot. If nothing is specifed all persons will be plotted.
 #' @param facets Logical. Should the plots be faceted? Default is TRUE.
@@ -344,7 +343,8 @@ plot.wizirt <- function(wizirt_fit,
       plt <- paste(plt, 'theta', sep = '_')
       p <- p + ggplot2::geom_histogram(fill = "#094bab",
                                      alpha = .3,
-                                     color = '#130d42', bins = 30, data = df)
+                                     color = '#130d42'
+                                     , data = df)
     }
   }
 
@@ -423,6 +423,42 @@ plot.wizirt <- function(wizirt_fit,
 
   }
 
+  # assumptions
+  ## local dependence
+  if (type == 'ld_pairs'){
+    assumptions <- irt_assume(wizirt_fit)
+    df <- assumptions$ld %>%
+      tidyr::pivot_longer(cols = item_1:item_2, values_to = 'item') %>%
+      dplyr::mutate(name2 = dplyr::case_when(name == 'item_1' ~ 'item_2',
+                                             T ~ 'item_1') ) %>%
+      tidyr::pivot_longer(cols = c(name, name2)) %>%
+      tidyr::pivot_wider(names_from = name, values_from = item)
+
+    plt_data[['ld_pairs']] <- df
+
+    p <- df %>%
+      ggplot2::ggplot(ggplot2::aes(x = name, y = name2, fill = pvals < .05)) +
+      ggplot2::geom_tile() +
+      ggplot2::scale_fill_manual(values = c("transparent", "#9e0317")) +
+      ggplot2::theme_classic()+
+      ggplot2::labs(title = "Local Dependence by Item Pair",
+                    y = "Item",
+                    x = "Item")
+
+
+  }
+  if (type == 'ld'){
+    assumptions <- irt_assume(wizirt_fit)
+    plt_data[['ld']] <- assumptions$ld
+
+    p <- assumptions$ld %>%
+      tidyr::pivot_longer(cols = item_1:item_2, values_to = 'item') %>%
+      ggplot2::ggplot(ggplot2::aes(x = LD, y = item)) +
+      ggplot2::geom_boxplot(fill = "#566D81", alpha = .8) +
+      ggplot2::labs(title = "Local Dependence by Item", y = "Item") +
+      ggplot2::theme_classic()
+  }
+
   p <- p + ggplot2::theme_classic()
 
   if (return_data){
@@ -432,7 +468,34 @@ plot.wizirt <- function(wizirt_fit,
   return(p)
 }
 
+#' A funirction for handling large numbers of students and items in plots.
+#'
+#' @description This function helps to break the plots into several plots when many items or persons are present.
+#' @param object An object of class wizirt_fit.
+#' @param type Character. Currently, can be 'obs', 'trace', 'info', 'resid', 'stand', 'tinfo', 'theta', 'diff', 'theta_diff', 'np_prf', 'ld', or 'ld_pairs'.
+#' @param items_per Numeric. How many items to plot per page?
+#' @param persons_per Numeric. How many persons to plot per page?
+#' @export
+plot_wrap <- function(object, type, items_per = NULL, persons_per = NULL){
 
+  rem <- ifelse(is.null(items_per),
+                nrow(object$fit$data)%/%persons_per,
+                ncol(object$fit$data)%/%items_per)
+  if(rem <= 1){
+    print(plot(object, type = type))
+  } else{
+    if (!is.null(items_per)){
+      for( i in seq_len(rem+1)){
+        print(plot(object, type = type, items = seq_len(items_per) + items_per*(i-1)))
+      }
+    } else {
+      for( i in seq_len(rem+1)){
+        print(plot(object, type = type, persons = seq_len(persons_per) + persons_per*(i-1)))
+      }
+    }
+
+  }
+}
 
 
 irf_probs <- function(wizirt_fit, theta = seq(-6, 6, length.out = 100)){
