@@ -350,35 +350,27 @@ plot.wizirt <- function(wizirt_fit,
 
   if (grepl('theta', type)&grepl('diff', type)){
 
-    plt_data[['theta']] <- wizirt_fit$fit$parameters$persons %>%
-      dplyr::filter(ids %in% persons)
-    plt_data[['diff']] <- wizirt_fit$fit$parameters$coefficients %>%
-      dplyr::filter(item %in% items)
 
-    p <- ggplot2::ggplot(data = plt_data[['theta']])+
-      ggplot2::annotate('rect', xmin = -3, xmax = 3,
-                        ymin = min(c(plt_data[['diff']]$difficulty,
-                                     plt_data[['theta']]$ability) ) - 2,
-                        ymax = min(plt_data[['theta']]$ability), fill = 'firebrick', alpha = .1) +
-      ggplot2::annotate('rect', xmin = -3, xmax = 3,
-                        ymax = max(c(plt_data[['diff']]$difficulty,
-                                     plt_data[['theta']]$ability) ) + 2,
-                        ymin = max(plt_data[['theta']]$ability), fill = 'firebrick', alpha = .1)+
-      gghalves::geom_half_violin(ggplot2::aes(y = ability, fill = 'a'), side = 'l') +
-      gghalves::geom_half_violin(mapping = ggplot2::aes(y = difficulty, fill = 'b'),
-                                 data = plt_data[['diff']], side = 'r') +
-      ggplot2::coord_cartesian(ylim = c(min(plt_data[['diff']]$difficulty - .25),
-                                        max(plt_data[['theta']]$ability + .25)), xlim = c(-.5, .5)) +
-      ggplot2::theme_classic() +
-      ggplot2::scale_fill_manual(name = '',
-                                 values =c('a'='lightblue','b'='#161e70'),
-                                 labels = c('Person Ability', 'Item Difficulty')) +
+    df <- dplyr::bind_rows(
+      wizirt_fit$fit$parameters$persons %>%
+        dplyr::filter(ids %in% persons) %>%
+        dplyr::select(ability, ids) %>%
+        dplyr::rename(theta = 'ability') %>%
+        dplyr::mutate(type = 'person',
+                                     ids = as.character(ids)),
+      wizirt_fit$fit$parameters$coefficients %>%
+        dplyr::filter(item %in% items) %>%
+        dplyr::select(item, difficulty) %>%
+        dplyr::rename(ids = 'item', theta = 'difficulty') %>%
+        dplyr::mutate(type = 'item', ids = as.character(ids)))
+
+    p <- df %>% ggplot2::ggplot(ggplot2::aes(x = theta, y = type)) +
+      ggplot2::geom_jitter(width = 0) +
       ggplot2::labs(title = 'Distribution of Person Abilities and Item Locations',
-                    x = '', y = 'Theta') +
-      ggplot2::theme(axis.title.x=ggplot2::element_blank(),
-                     axis.text.x=ggplot2::element_blank(),
-                     axis.ticks.x=ggplot2::element_blank())
+                    y = '', x = 'Theta')
 
+    plt_data[['theta_diff']] <- wizirt_fit$fit$parameters$persons %>%
+      dplyr::filter(ids %in% persons)
 
   }
 
