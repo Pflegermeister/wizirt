@@ -9,7 +9,7 @@ irt_item_fit(wizirt_fit, stats = c("X2"))
 \arguments{
 \item{wizirt_fit}{An object coming from the fit_wizirt function.}
 
-\item{stats}{A character or character string identifying item-level fit measures. Must be one of c('Zh', 'X2', 'G2', 'infit'). More are coming very soon.  Default is 'X2'.}
+\item{stats}{A character or character string identifying item-level fit measures. Must be at least one of c('Zh', 'X2', 'G2', 'infit'). More are coming very soon.  Default is 'X2'.}
 }
 \value{
 A list with item_stats (item-level statistics), item_information (data for item and test information), and item_probabilities (data for ICC curves).

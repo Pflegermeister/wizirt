@@ -17,8 +17,7 @@
 )
 }
 \arguments{
-\item{type}{Character string. Currently, can be 'trace' for item characteristic curves or 'info' for item information.
-'obs', 'trace', 'info', 'resid', 'stand', 'tinfo', 'theta', 'diff', 'theta_diff', and 'np_prf'}
+\item{type}{Character. Currently, can be 'obs', 'trace', 'info', 'resid', 'stand', 'tinfo', 'theta', 'diff', 'theta_diff', 'np_prf', 'ld', or 'ld_pairs'.}
 
 \item{items}{Which items to plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to plot. If nothing is specifed all items will be plotted.}
 
