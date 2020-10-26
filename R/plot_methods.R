@@ -295,15 +295,16 @@ plot.wizirt <- function(wizirt_fit,
 
       p <- df %>%
         ggplot2::ggplot(ggplot2::aes(x = ability)) +
-        ggplot2::geom_density(fill = "#094bab",
+        ggplot2::geom_histogram(fill = "#094bab",
                               alpha = .3,
-                              color = '#130d42') +
+                              color = '#130d42',
+                              bins = 30) +
         ggplot2::labs(title = 'Distribution of Person Abilities')
     } else {
       plt <- paste(plt, 'theta', sep = '_')
-      p <- p + ggplot2::geom_density(fill = "#094bab",
+      p <- p + ggplot2::geom_histogram(fill = "#094bab",
                                      alpha = .3,
-                                     color = '#130d42', data = df)
+                                     color = '#130d42', bins = 30, data = df)
     }
   }
 
@@ -335,15 +336,15 @@ plot.wizirt <- function(wizirt_fit,
 
       p <- df %>%
         ggplot2::ggplot(ggplot2::aes(x = difficulty)) +
-        ggplot2::geom_density(fill = "#094bab",
+        ggplot2::geom_histogram(fill = "#094bab",
                               alpha = .3,
-                              color = '#130d42') +
+                              color = '#130d42', bins = 30) +
         ggplot2::labs(title = 'Distribution of Item Locations')
     } else {
       plt <- paste(plt, 'theta', sep = '_')
-      p <- p + ggplot2::geom_density(fill = "#094bab",
+      p <- p + ggplot2::geom_histogram(fill = "#094bab",
                                      alpha = .3,
-                                     color = '#130d42', data = df)
+                                     color = '#130d42', bins = 30, data = df)
     }
   }
 
