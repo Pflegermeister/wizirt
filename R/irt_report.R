@@ -29,7 +29,6 @@ irt_report <- function(data,
 
   file <- paste0(tempfile(), ".rds")
   readr::write_rds(data, file)
-
   parameters <- list(data = file,
                  title = title,
                  author = author,
@@ -50,8 +49,12 @@ irt_html_report(parameters = parameters)
 
 }
 
+clean_string <- function(x){
+  gsub("_{2,}", "_", gsub(" ", "_", tolower(trimws(gsub("[[:punct:]]", "", x)))))
+}
+
 irt_html_report <- function(parameters){
-  fileConn <- file(paste0(gsub(" ", "_", parameters$title), ".Rmd"))
+  fileConn <- file(paste0(clean_string(parameters$title), ".Rmd"))
   writeLines(c("---",
                "output:",
                "  rmdformats::readthedown:",
@@ -79,6 +82,7 @@ irt_html_report <- function(parameters){
                "data: `r params$data`",
                "date: `r format(Sys.time(), '%B %d, %Y, %H:%M %p')`",
                "---",
+               "<link rel=\"shortcut icon\" href=\"https://raw.githubusercontent.com/Pflegermeister/wizirt/main/pkgdown/favicon/favicon-32x32.png\">",
                "```{css, echo = FALSE, message = FALSE, warning = FALSE}",
                "#main .nav-pills > li.active > a,",
                "#main .nav-pills > li.active > a:hover,",
@@ -242,7 +246,7 @@ irt_html_report <- function(parameters){
                "",
                "## Data Summary",
                "",
-               "Model built on a data set with `r nrow(my_model$fit$data)` examinees ($\bar{\\theta}$ = `r round(mean(my_model$fit$parameters$persons$ability, na.rm = T), 2)`, $\\sigma_{\\theta}$ = `r round(sd(my_model$fit$parameters$persons$ability, na.rm = T), 2)`) and `r ncol(my_model$fit$data)` items ($\bar{\\delta}$ = `r round(mean(my_model$fit$parameters$coefficients$difficulty, na.rm = T), 2)`, $\\sigma_{\\delta}$ = `r round(sd(my_model$fit$parameters$coefficients$difficulty, na.rm = T), 2)`). ",
+               "Model built on a data set with `r nrow(my_model$fit$data)` examinees ($\\bar{\\theta}$ = `r round(mean(my_model$fit$parameters$persons$ability, na.rm = T), 2)`, $\\sigma_{\\theta}$ = `r round(sd(my_model$fit$parameters$persons$ability, na.rm = T), 2)`) and `r ncol(my_model$fit$data)` items ($\\bar{\\delta}$ = `r round(mean(my_model$fit$parameters$coefficients$difficulty, na.rm = T), 2)`, $\\sigma_{\\delta}$ = `r round(sd(my_model$fit$parameters$coefficients$difficulty, na.rm = T), 2)`). ",
                "",
                "## Missing Data Summary",
                "",
@@ -444,6 +448,6 @@ irt_html_report <- function(parameters){
   ), fileConn)
   close(fileConn)
 
-  rmarkdown::render(paste0(gsub(" ", "_", parameters$title), ".Rmd"), params = parameters, runtime = 'static')
-  browseURL(paste0(getwd(), gsub(" ", "_", parameters$title), ".html"))
+  rmarkdown::render(paste0(clean_string(parameters$title), ".Rmd"), params = parameters, runtime = 'static')
+  browseURL(paste0(getwd(), "/", clean_string(parameters$title), ".html"), browser = NULL)
 }
