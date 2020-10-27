@@ -15,7 +15,7 @@ irt_model_pfa <- function(wizirt_fit, pfa = NULL, predictors = NULL, bins = 5){
 
     mod_list <- list()
     for (i in pfa$spec$stats){
-      mod_list[[i]] <- eval(parse(text = glue::glue('lme4::lmer(',
+      mod_list[[i]] <- eval(parse(text = glue::glue('blme::blmer(',
                                                     '{i} ~',
                                                     '(1|ids) + .,',
                                                     'data = mlm_data)')))
@@ -49,7 +49,7 @@ pfa_fit_subset <- function(bin, data = mlm_data, stats = pfa$spec$stats){
   }
 
   tibble::as_tibble(stats_list) %>%
-    dplyr::mutate(ids = unique(data$ids), bin = bin)
+    dplyr::mutate(ids = unique(data$ids), ability = mlm_sub %>% dplyr::pull(ability), bin = bin)
 
 }
 
@@ -71,7 +71,7 @@ compile_mlm_data <- function(wizirt_fit, pfa, predictors = NULL, bins = bins){
 
   mlm_data <- lapply(1:bins, pfa_fit_subset, data = out, stats = pfa$spec$stats)
 
-  mlm_data <- dplyr::bind_rows(mlm_data) %>% dplyr::arrange(ids, bin)
+  mlm_data <- dplyr::bind_rows(mlm_data) %>% dplyr::arrange(ids, ability, bin)
 
   if(!is.null(predictors)){
     preds <- tibble::tibble(dplyr::bind_cols(ids = wizirt_fit$fit$parameters$persons$ids, predictors))
