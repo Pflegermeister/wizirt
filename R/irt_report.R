@@ -79,7 +79,7 @@ irt_html_report <- function(parameters){
                "data: `r params$data`",
                "date: `r format(Sys.time(), '%B %d, %Y, %H:%M %p')`",
                "---",
-               "```{css}",
+               "```{css, echo = FALSE, message = FALSE, warning = FALSE}",
                "#main .nav-pills > li.active > a,",
                "#main .nav-pills > li.active > a:hover,",
                "#main .nav-pills > li.active > a:focus {",
