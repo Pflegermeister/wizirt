@@ -48,7 +48,7 @@ irt_html_report(params = params)
 }
 
 irt_html_report <- function(params){
-  fileConn(paste0(gsub(" ", "_", params$title), ".Rmd"))
+  fileConn <- file(paste0(gsub(" ", "_", params$title), ".Rmd"))
   writeLines(c("---",
                "output:",
                "  rmdformats::readthedown:",
