@@ -56,7 +56,6 @@ irt_html_report <- function(parameters){
                "output:",
                "  rmdformats::readthedown:",
                "    highlight: kate",
-               "    css: custom.css",
                "params:",
                "  title: 'My Report' ",
                "  author: '' ",
