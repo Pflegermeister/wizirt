@@ -220,7 +220,7 @@ irt_html_report <- function(parameters){
                " data('responses') ",
                " data <- responses[,-1]",
                "} else {",
-               "  data <- params$data",
+               "  data <- readr::read_rds(params$data)",
                "}",
                "```",
                "",
