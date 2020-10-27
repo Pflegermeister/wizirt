@@ -1,7 +1,7 @@
 Package: wizirt
 Type: Package
 Title: A United API for IRT
-Version: 0.0.1.52
+Version: 0.0.1.6
 Author: Isaac Pfleger
 Maintainer: Isaac Pfleger <isaac.pfleger@gmail.com>
 Description: This package provides wrapper functions to a number of other IRT packages to provide a more seamless experience. 

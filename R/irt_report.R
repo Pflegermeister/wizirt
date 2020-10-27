@@ -82,7 +82,7 @@ irt_html_report <- function(parameters){
                "data: `r params$data`",
                "date: `r format(Sys.time(), '%B %d, %Y, %H:%M %p')`",
                "---",
-               "<link rel=\"shortcut icon\" href=\"https://raw.githubusercontent.com/Pflegermeister/wizirt/main/pkgdown/favicon/favicon-32x32.png\">",
+               "<link rel=\"shortcut icon\" href=\"https://raw.githubusercontent.com/Pflegermeister/wizirt/main/pkgdown/favicon/apple-touch-icon-60x60.png\">",
                "```{css, echo = FALSE, message = FALSE, warning = FALSE}",
                "#main .nav-pills > li.active > a,",
                "#main .nav-pills > li.active > a:hover,",
