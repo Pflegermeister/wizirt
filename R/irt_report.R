@@ -43,7 +43,7 @@ irt_report <- function(data,
                  pfa_bins = pfa_bins ,
                  pfa_stats = pfa_stats)
 
-
+irt_html_report(params = params)
 
 }
 
