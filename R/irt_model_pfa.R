@@ -15,10 +15,11 @@ irt_model_pfa <- function(wizirt_fit, pfa = NULL, predictors = NULL, bins = 5){
 
     mod_list <- list()
     for (i in pfa$spec$stats){
-      mod_list[[i]] <- eval(parse(text = glue::glue('blme::blmer(',
+      mod_list[[i]] <- eval(parse(text = glue::glue('lme4::lmer(',
                                                     '{i} ~',
                                                     '(1|ids) + .,',
-                                                    'data = mlm_data)')))
+                                                    'data = mlm_data %>%
+                                                    dplyr::select(-all_of(pfa$spec$stats[pfa$spec$stats != "{i}"])))')))
 
 
     out <- list(icc = sapply(mod_list, performance::icc), models = mod_list) %>% `class<-`(c('pfa_mlm', class(.)))
