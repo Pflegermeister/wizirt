@@ -18,8 +18,7 @@ irt_model_pfa <- function(wizirt_fit, pfa = NULL, predictors = NULL, bins = 5){
       mod_list[[i]] <- eval(parse(text = glue::glue('lme4::lmer(',
                                                     '{i} ~',
                                                     '(1|ids) + .,',
-                                                    'data = mlm_data %>%
-                                                    dplyr::select(-all_of(pfa$spec$stats[pfa$spec$stats != "{i}"])))')))
+                                                    'data = mlm_data)')))
 
 
     out <- list(icc = sapply(mod_list, performance::icc), models = mod_list) %>% `class<-`(c('pfa_mlm', class(.)))
