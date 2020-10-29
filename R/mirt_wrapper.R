@@ -44,7 +44,7 @@ irt_mirt <- function(data,
                                           gsub('item_type', '"{item_type}"',
                                                paste0(trimws(capture.output(mirt_model@Call)),
                                                       collapse = " "))))
-  out$model$engine$call = paste(trimws(capture.output(out$model$engine$call$fit$model$engine$call)), collapse = "")
+  out$model$engine$call = paste(trimws(capture.output(out$model$engine$call)), collapse = "")
   out$model$n_factors = 1
   out$model$item_type = item_type
 
