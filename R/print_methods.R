@@ -33,7 +33,7 @@ print.wizirt <- function(x, type = 'tech'){
     vals = c(x$fit$model$engine$pkg,
              x$fit$model$engine$func,
              paste(x$fit$model$engine$ver),
-             paste(trimws(capture.output(x$fit$model$engine$call)), collapse = ""),
+             x$fit$model$engine$call,
              x$fit$model$n_factors,
              x$fit$model$item_type,
              x$fit$estimation$convergence,

@@ -1,7 +1,7 @@
 Package: wizirt
 Type: Package
 Title: A United API for IRT
-Version: 0.0.1.6
+Version: 0.0.1.7
 Author: Isaac Pfleger
 Maintainer: Isaac Pfleger <isaac.pfleger@gmail.com>
 Description: This package provides wrapper functions to a number of other IRT packages to provide a more seamless experience. 
@@ -22,7 +22,8 @@ Imports:
     shiny,
     DT,
     reactable,
-    rmdformats
+    rmdformats,
+    stringr
 RoxygenNote: 7.1.1
 Depends: 
     R (>= 2.10),
