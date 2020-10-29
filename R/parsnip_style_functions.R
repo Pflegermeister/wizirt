@@ -1,3 +1,15 @@
+#' Estimate an IRT model
+#'
+#' Estimate an IRT model using various engines
+#' @inheritParams irt
+#' @param engine Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.
+#' @inheritParams fit_wizirt
+wizirt <- function(data, rownames = NULL, item_type, engine, irt_pars = TRUE, tol = 1e-05){
+  irt(item_type = item_type, irt_pars = irt_pars) %>%
+    set_engine(engine = engine) %>%
+    fit_wizirt(data = data)
+}
+
 #' Describe the model you will run
 #'
 #' @description irt() is used to describe a model, it must be used in conjunction with set_engine(), and fit_wizirt().
