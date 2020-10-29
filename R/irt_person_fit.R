@@ -4,7 +4,8 @@
 #' @param wizirt_fit An object coming from the fit_wizirt function.
 #' @param stats A character or character string identifying person-level fit measures. Default is "Ht". All of the stats in PerFit should be available. Let me know if any don't work. for more information.
 #' @param items Which items toe plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to include. If nothing is specified all items are included.
-#' @param level Numeric. What level of significance for the fit statistics? Currently only applies to Ht, lzstar, and U3
+#' @param level Numeric. Significance level for bootstrap distribution (value between 0 and 1). Default is 0.05.
+#' @param na.rm Logical. If FALSE, NAs are still removed, there is just a warning printed.
 #' @return A list with person-level statistics, person-response functions, data for person-response functions, and an empty slot for multi-level information that will be coming soon.
 #' @examples
 #' pfa <- wizirt2:::irt_person_fit(my_model)
@@ -12,7 +13,8 @@
 irt_person_fit <- function(wizirt_fit,
                            stats = c("Ht"),
                            items = NULL,
-                           level= .05
+                           level= .05,
+                           na.rm = FALSE
 ){
   out <- list(
     person_estimates = NULL,
@@ -41,20 +43,16 @@ irt_person_fit <- function(wizirt_fit,
                                         'IP = cbind(wizirt_fit$fit$parameters$coefficients[,3:2], guessing = 0),',
                                         'Ability = wizirt_fit$fit$parameters$persons$ability',
                                         ')')))
+    if (na.rm == FALSE & mean(is.na(wizirt_fit$fit$data)) > 0 ) {
+      rlang::warn("NAs omitted while estimating cut offs for person-fit statistics.")
+    }
+    free_fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
+                                             'IP = cbind(wizirt_fit$fit$parameters$coefficients[,2:3], guessing = 0),',
+                                             'Ability = wizirt_fit$fit$parameters$persons$ability,',
+                                             'NA.method = "NPModel")')))
 
     stats_list[[i]] <- fit$PFscores$PFscores
-    if(!i %in% c('Ht', 'U3', 'lzstar')){
-      next
-    }
-    if(i %in% c('U3')){
-      cut_off <- quantile(stats_list[[i]], 1-level, na.rm = T)
-    } else if (i %in% c('lzstar')) {
-      cut_off <- qnorm(level)
-    } else  if (i %in% c('Ht')) {
-      cut_off <- quantile(stats_list[[i]], level, na.rm = T)
-    }
-
-    stats_list[[glue::glue('{i}_cut')]] <- cut_off
+    stats_list[[glue::glue('{i}_cut')]] <- PerFit::cutoff(free_fit, Blvl = level)$Cutoff
     flagged[[i]] <- sapply(fit$PFscores$PFscores, function(x) ifelse(i == 'Ht', x < cut_off, x > cut_off))
 
   }
