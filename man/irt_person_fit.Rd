@@ -4,7 +4,13 @@
 \alias{irt_person_fit}
 \title{A function used to get additional person-level information, such as person-level fit measures and person response functions. I accidentally output plots in addition to data in one part. That will be moved to a plot method later.}
 \usage{
-irt_person_fit(wizirt_fit, stats = c("Ht"), items = NULL, level = 0.05)
+irt_person_fit(
+  wizirt_fit,
+  stats = c("Ht"),
+  items = NULL,
+  level = 0.05,
+  na.rm = FALSE
+)
 }
 \arguments{
 \item{wizirt_fit}{An object coming from the fit_wizirt function.}
@@ -13,7 +19,9 @@ irt_person_fit(wizirt_fit, stats = c("Ht"), items = NULL, level = 0.05)
 
 \item{items}{Which items toe plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to include. If nothing is specified all items are included.}
 
-\item{level}{Numeric. What level of significance for the fit statistics? Currently only applies to Ht, lzstar, and U3}
+\item{level}{Numeric. Significance level for bootstrap distribution (value between 0 and 1). Default is 0.05.}
+
+\item{na.rm}{Logical. If FALSE, NAs are still removed, there is just a warning printed.}
 }
 \value{
 A list with person-level statistics, person-response functions, data for person-response functions, and an empty slot for multi-level information that will be coming soon.

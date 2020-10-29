@@ -4,6 +4,7 @@
 #' @inheritParams irt
 #' @param engine Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.
 #' @inheritParams fit_wizirt
+#' @export
 wizirt <- function(data, rownames = NULL, item_type, engine, irt_pars = TRUE, tol = 1e-05){
   irt(item_type = item_type, irt_pars = irt_pars) %>%
     set_engine(engine = engine) %>%
