@@ -38,7 +38,7 @@ irt_person_fit <- function(wizirt_fit,
   flagged <- list()
   for (i in stats){
     fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
-                                        'IP = cbind(wizirt_fit$fit$parameters$coefficients[,2:3], guessing = 0),',
+                                        'IP = cbind(wizirt_fit$fit$parameters$coefficients[,3:2], guessing = 0),',
                                         'Ability = wizirt_fit$fit$parameters$persons$ability',
                                         ')')))
 
