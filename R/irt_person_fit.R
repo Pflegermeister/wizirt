@@ -53,13 +53,12 @@ irt_person_fit <- function(wizirt_fit,
 
     stats_list[[i]] <- fit$PFscores$PFscores
     stats_list[[glue::glue('{i}_cut')]] <- PerFit::cutoff(free_fit, Blvl = level)$Cutoff
-    flagged[[i]] <- sapply(fit$PFscores$PFscores, function(x) ifelse(i == 'Ht', x < cut_off, x > cut_off))
+
+    flagged[[i]] <- sapply(fit$PFscores$PFscores, function(x) ifelse(i %in% c('Ht', 'A.Kb', 'E.Kb', 'lz','lzstar', 'NCI', 'r.pbis'),
+                                                                     x < stats_list[[glue::glue('{i}_cut')]],
+                                                                     x > stats_list[[glue::glue('{i}_cut')]]))
 
   }
-  # Ht < cut = bad
-  # U3 > cut = bad
-
-
 
   out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
                                                    tibble::as_tibble(stats_list),
