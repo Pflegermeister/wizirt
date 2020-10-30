@@ -115,30 +115,35 @@ print.wizirt_ifa <- function(x){
 #' @param item_order A vector of item names or item positions specifying the order they should be printed in for the patterns. If NULL, items printed in the order they appear in the data. Can also be 'diff' to print patterns sorted by CTT difficulty.
 #' @export
 print.wizirt_pfa <- function(x, patterns = FALSE, item_order = NULL){
-  item_col = max(which(grepl("_cut", colnames(x$person_estimates)))) + 1
+
+  items <- x$person_estimates %>%
+    dplyr::select(-dplyr::contains(c("ability", "std_err", "ids", x$spec$stats))) %>%
+    colnames()
+
   if(patterns == TRUE){
     if(is.null(item_order)){
-      return(tidyr::unite(x$person_estimates, pattern, item_col:ncol(x$person_estimates), sep = '') )
+      return(tidyr::unite(x$person_estimates, pattern, items, sep = '') )
     }
     if (all(item_order == 'by_diff')) {
       item_order <- x$person_estimates %>%
-        dplyr::select(item_col:ncol(x$person_estimates)) %>%
+        dplyr::select(items) %>%
         colMeans(na.rm = T) %>%
         sort(decreasing = T) %>% names()
     } else {
       item_order <- x$person_estimates %>%
-        dplyr::select(item_col:ncol(x$person_estimates)) %>%
+        dplyr::select(items) %>%
         dplyr::select(tidyselect::all_of(item_order)) %>% names()
     }
 
 
     return(tidyr::unite(x$person_estimates %>%
-                   dplyr::select(1:(item_col-1),
-                                 tidyselect::all_of(item_order)),
-                 pattern, item_col:ncol(x$person_estimates), sep = ''))
+                   dplyr::select(-items,
+                                 tidyselect::all_of(items)),
+                 pattern, items, sep = ''))
 
   } else {
-    return(x$person_estimates[1:(item_col-1)])
+    return(x$person_estimates %>%
+             dplyr::select(-items))
   }
 
 }

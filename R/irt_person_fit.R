@@ -2,7 +2,7 @@
 #'
 #' If there is missing data present, non-parametric imputation  will be done to get the cutoff for the measures.
 #' @param wizirt_fit An object coming from the fit_wizirt function.
-#' @param stats A character or character string identifying person-level fit measures. Default is "Ht". All of the stats in PerFit should be available. Let me know if any don't work. for more information.
+#' @param stats A character or character string identifying person-level fit measures. Default is "Ht", but accepts all of the person-fit measures from the PerFit package.
 #' @param items Which items toe plot? Either a numeric vector of item positions in the column names of the data, or a vector of the item names to include. If nothing is specified all items are included.
 #' @param level Numeric. Significance level for bootstrap distribution (value between 0 and 1). Default is 0.05.
 #' @param na.rm Logical. If FALSE, NAs are still removed, there is just a warning printed.
@@ -20,7 +20,7 @@ irt_person_fit <- function(wizirt_fit,
     person_estimates = NULL,
     prf = NULL,
     spec = list(
-      stats = stats
+      stats = NULL
     )#,
     #rownames = wizirt_fit$fit
   )
@@ -34,6 +34,25 @@ irt_person_fit <- function(wizirt_fit,
 
   df <- wizirt_fit$fit$data %>%
     dplyr::select(which(items %in% items))
+
+  sirt_stats <- stats[which(!stats %in% c('lz', 'lzstar', 'NCI', 'E.KB',
+                                          'D.KB', 'A.KB', 'Ht', 'ZU3', 'U3',
+                                          'Cstar', 'C.Sato','G'))]
+  if("infit" %in% sirt_stats & !("outfit" %in% sirt_stats)){
+    sirt_stats <- c(sirt_stats[sirt_stats != "infit"], "infit", "outfit")
+  }
+
+  stats <- stats[which(stats %in% c('lz', 'lzstar', 'NCI', 'E.KB',
+                                    'D.KB', 'A.KB', 'Ht', 'ZU3', 'U3',
+                                    'Cstar', 'C.Sato','G'))]
+  if(identical(stats, character(0))){
+    stats <- "Ht"
+    drop_ht <- T
+  } else{
+    drop_ht <- F
+  }
+
+  out$spec$stats <- c(stats, sirt_stats)
 
   # person_estimates...
   stats_list <- list()
@@ -60,11 +79,33 @@ irt_person_fit <- function(wizirt_fit,
 
   }
 
-  out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
-                                                   tibble::as_tibble(stats_list),
-                                                   df))
+  if(!identical(sirt_stats, character(0))){
+    if (wizirt_fit$fit$model$item_type != "Rasch"){
+      rlang::warn(glue::glue("wizirt cannot get person statistic(s) {paste0(sirt_stats, collapse = ', ')} for non-Rasch models."))
+    } else {
+      out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
+                                                       tibble::as_tibble(stats_list),
+                                                       personfit.stat(data,
+                                                                      print(my_model, type = "person")$ability,
+                                                                      print(my_model, type = "item")$difficulty) %>%
+                                                         dplyr::select(tidyselect::all_of(sirt_stats)),
+                                                       df))
+      if(drop_ht){
+        out$person_estimates <- out$person_estimates %>% dplyr::select(-contains("Ht"))
+      }
+    }
+  } else {
+    out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
+                                                     tibble::as_tibble(stats_list),
+                                                     df))
+  }
+
   flagged = (dplyr::bind_rows(flagged) %>% dplyr::rowwise() %>% rowSums()) > 0
 
+
+  if(drop_ht){
+    flagged = rep(FALSE, length(flagged))
+  }
 
   out$prf <- gg_prf(df,
                     flagged = flagged,
@@ -80,7 +121,7 @@ irt_person_fit <- function(wizirt_fit,
                     mu = 0,
                     sigma = 1)
 
-  class(out) <- c( "wizirt_pfa", class(out))
+  class(out) <- c("wizirt_pfa", class(out))
   out
 
 }
