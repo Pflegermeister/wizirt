@@ -324,7 +324,7 @@ plot.wizirt <- function(wizirt_fit,
         ggplot2::labs(title = 'Standard Error of Measured Abilities')
     } else {
       plt <- paste(plt, 'SE', sep = '_')
-      p <- p + ggplot2::geom_line(ggplot2::aes(x = ability, y = std_err), lty = 2, data = dfa) +
+      p <- p + ggplot2::geom_line(ggplot2::aes(x = ability, y = std_err), lty = 2, data = df) +
         ggplot2::labs(subtitle = 'Black dotted line is SE', y = '')
     }
   }
