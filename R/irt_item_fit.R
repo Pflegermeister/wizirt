@@ -62,6 +62,11 @@ irt_item_fit <- function(wizirt_fit, stats = c('X2')){
   out
 }
 
+to_slope <- function(b, a, g = 0, u = 1){
+  d = -a*b
+  tibble::tibble(a1 = a, d = d,  g = g, u = u)
+}
+
 to_mirt <- function(wizirt_fit){
   fd <- `colnames<-`(cbind(matrix(0, ncol = ncol(wizirt_fit$fit$data),
                                   nrow = nrow(wizirt_fit$fit$data)),
@@ -89,10 +94,14 @@ to_mirt <- function(wizirt_fit){
                nfact = 1,
                Theta = wizirt_fit$fit$parameters$persons$ability)
 
-  a1 = wizirt_fit$fit$parameters$coefficients$discrimination
-  d = wizirt_fit$fit$parameters$coefficients$difficulty
-  g = rep(-999, length(wizirt_fit$fit$parameters$coefficients$difficulty)) # Notice this breaks for 3PL
-  u = rep(999, length(wizirt_fit$fit$parameters$coefficients$difficulty))
+  mirt_coefs <- to_slope(b = wizirt_fit$fit$parameters$coefficients$difficulty,
+           a = wizirt_fit$fit$parameters$coefficients$discrimination,
+           g = wizirt_fit$fit$parameters$coefficients$guessing)
+
+  a1 = mirt_coefs$a1
+  d = mirt_coefs$d
+  g = mirt_coefs$g
+  u = mirt_coefs$u
 
   est = `names<-`(dplyr::case_when(wizirt_fit$fit$model$item_type == "Rasch" ~ c(F, T, F, F),
                                    T ~ c(T, T, F, F)), c("a1", "d", "g", "u"))

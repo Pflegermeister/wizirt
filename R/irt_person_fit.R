@@ -31,6 +31,9 @@ irt_person_fit <- function(wizirt_fit,
   if(is.numeric(items)){
     items = colnames(wizirt_fit$fit$data)[items]
   }
+  if(length(items) == 1){
+    rlang::abort("Too many items removed from the data.")
+  }
 
   df <- wizirt_fit$fit$data %>%
     dplyr::select(which(items %in% items))
@@ -45,67 +48,91 @@ irt_person_fit <- function(wizirt_fit,
   stats <- stats[which(stats %in% c('lz', 'lzstar', 'NCI', 'E.KB',
                                     'D.KB', 'A.KB', 'Ht', 'ZU3', 'U3',
                                     'Cstar', 'C.Sato','G'))]
-  if(identical(stats, character(0))){
-    stats <- "Ht"
-    drop_ht <- T
-  } else{
-    drop_ht <- F
-  }
 
   out$spec$stats <- c(stats, sirt_stats)
 
-  # person_estimates...
-  stats_list <- list()
-  flagged <- list()
-  for (i in stats){
-    fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
-                                        'IP = cbind(wizirt_fit$fit$parameters$coefficients[,3:2], guessing = 0),',
-                                        'Ability = wizirt_fit$fit$parameters$persons$ability',
-                                        ')')))
-    if (na.rm == FALSE & mean(is.na(wizirt_fit$fit$data)) > 0 ) {
-      rlang::warn("NAs omitted while estimating cut offs for person-fit statistics.")
-    }
-    free_fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
-                                             'IP = cbind(wizirt_fit$fit$parameters$coefficients[,2:3], guessing = 0),',
-                                             'Ability = wizirt_fit$fit$parameters$persons$ability,',
-                                             'NA.method = "NPModel")')))
 
-    stats_list[[i]] <- fit$PFscores$PFscores
-    stats_list[[glue::glue('{i}_cut')]] <- PerFit::cutoff(free_fit, Blvl = level)$Cutoff
-
-    flagged[[i]] <- sapply(fit$PFscores$PFscores, function(x) ifelse(i %in% c('Ht', 'A.Kb', 'E.Kb', 'lz','lzstar', 'NCI', 'r.pbis'),
-                                                                     x < stats_list[[glue::glue('{i}_cut')]],
-                                                                     x > stats_list[[glue::glue('{i}_cut')]]))
-
-  }
-
-  if(!identical(sirt_stats, character(0))){
+  if(identical(stats, character(0)) & !identical(sirt_stats, character(0))){
     if (wizirt_fit$fit$model$item_type != "Rasch"){
-      rlang::warn(glue::glue("wizirt cannot get person statistic(s) {paste0(sirt_stats, collapse = ', ')} for non-Rasch models."))
-    } else {
-      out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
-                                                       tibble::as_tibble(stats_list),
-                                                       personfit.stat(data,
-                                                                      print(my_model, type = "person")$ability,
-                                                                      print(my_model, type = "item")$difficulty) %>%
-                                                         dplyr::select(tidyselect::all_of(sirt_stats)),
-                                                       df))
-      if(drop_ht){
-        out$person_estimates <- out$person_estimates %>% dplyr::select(-contains("Ht"))
-      }
+      rlang::abort(glue::glue("wizirt cannot get person statistic(s) {paste0(sirt_stats, collapse = ', ')} for non-Rasch models."))
     }
-  } else {
+    out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
+                                                     sirt::personfit.stat(df,
+                                                                          print(wizirt_fit, type = "person")$ability,
+                                                                          print(wizirt_fit, type = "item")$difficulty) %>%
+                                                       dplyr::select(tidyselect::all_of(sirt_stats)),
+                                                     df))
+    flagged = list(flagged = rep(FALSE, nrow(out$person_estimates)))
+
+  } else if(!identical(stats, character(0)) & identical(sirt_stats, character(0))){
+    # person_estimates...
+    stats_list <- list()
+    flagged <- list()
+    for (i in stats){
+      fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
+                                          'IP = cbind(wizirt_fit$fit$parameters$coefficients[,3:2], guessing = 0),',
+                                          'Ability = wizirt_fit$fit$parameters$persons$ability',
+                                          ')')))
+      if (na.rm == FALSE & mean(is.na(wizirt_fit$fit$data)) > 0 ) {
+        rlang::warn("NAs omitted while estimating cut offs for person-fit statistics.")
+      }
+      free_fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
+                                               'IP = cbind(wizirt_fit$fit$parameters$coefficients[,2:3], guessing = 0),',
+                                               'Ability = wizirt_fit$fit$parameters$persons$ability,',
+                                               'NA.method = "NPModel")')))
+
+      stats_list[[i]] <- fit$PFscores$PFscores
+      stats_list[[glue::glue('{i}_cut')]] <- PerFit::cutoff(free_fit, Blvl = level)$Cutoff
+
+      flagged[[i]] <- sapply(fit$PFscores$PFscores, function(x) ifelse(i %in% c('Ht', 'A.Kb', 'E.Kb', 'lz','lzstar', 'NCI', 'r.pbis'),
+                                                                       x < stats_list[[glue::glue('{i}_cut')]],
+                                                                       x > stats_list[[glue::glue('{i}_cut')]]))
+
+    }
     out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
                                                      tibble::as_tibble(stats_list),
                                                      df))
+  } else {
+    if (wizirt_fit$fit$model$item_type != "Rasch"){
+      rlang::abort(glue::glue("wizirt cannot get person statistic(s) {paste0(sirt_stats, collapse = ', ')} for non-Rasch models."))
+    }
+    # person_estimates...
+    stats_list <- list()
+    flagged <- list()
+    for (i in stats){
+      fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
+                                          'IP = cbind(wizirt_fit$fit$parameters$coefficients[,3:2], guessing = 0),',
+                                          'Ability = wizirt_fit$fit$parameters$persons$ability',
+                                          ')')))
+      if (na.rm == FALSE & mean(is.na(wizirt_fit$fit$data)) > 0 ) {
+        rlang::warn("NAs omitted while estimating cut offs for person-fit statistics.")
+      }
+      free_fit <- eval(parse(text = glue::glue('PerFit::{i}(df,',
+                                               'IP = cbind(wizirt_fit$fit$parameters$coefficients[,2:3], guessing = 0),',
+                                               'Ability = wizirt_fit$fit$parameters$persons$ability,',
+                                               'NA.method = "NPModel")')))
+
+      stats_list[[i]] <- fit$PFscores$PFscores
+      stats_list[[glue::glue('{i}_cut')]] <- PerFit::cutoff(free_fit, Blvl = level)$Cutoff
+
+      flagged[[i]] <- sapply(fit$PFscores$PFscores, function(x) ifelse(i %in% c('Ht', 'A.Kb', 'E.Kb', 'lz','lzstar', 'NCI', 'r.pbis'),
+                                                                       x < stats_list[[glue::glue('{i}_cut')]],
+                                                                       x > stats_list[[glue::glue('{i}_cut')]]))
+
+    }
+    out$person_estimates = tibble::tibble(data.frame(wizirt_fit$fit$parameters$persons,
+                                                       tibble::as_tibble(stats_list),
+                                                       sirt::personfit.stat(df,
+                                                                            print(wizirt_fit, type = "person")$ability,
+                                                                            print(wizirt_fit, type = "item")$difficulty) %>%
+                                                         dplyr::select(tidyselect::all_of(sirt_stats)),
+                                                       df))
   }
 
   flagged = (dplyr::bind_rows(flagged) %>% dplyr::rowwise() %>% rowSums()) > 0
 
 
-  if(drop_ht){
-    flagged = rep(FALSE, length(flagged))
-  }
+
 
   out$prf <- gg_prf(df,
                     flagged = flagged,

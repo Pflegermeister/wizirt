@@ -14,7 +14,7 @@
 ##' }
 #' @method print wizirt
 #' @export
-print.wizirt <- function(x, type = 'tech'){
+print.wizirt <- function(x, type = 'desc'){
   tab <- NULL
   if(type == 'tech'){
 
@@ -94,7 +94,7 @@ print.wizirt <- function(x, type = 'tech'){
     tab <- x$fit$parameters$coefficients
   }
   if (is.null(tab)) rlang::abort(glue::glue('Print method "{type}" is not available.'))
-  return(tab)
+  tab
 
 }
 
@@ -104,7 +104,7 @@ print.wizirt <- function(x, type = 'tech'){
 #' @method print wizirt_ifa
 #' @export
 print.wizirt_ifa <- function(x){
-  x$item_stats
+  print(x$item_stats)
 }
 
 #' Print method for wizirt item-fit objects
@@ -122,7 +122,7 @@ print.wizirt_pfa <- function(x, patterns = FALSE, item_order = NULL){
 
   if(patterns == TRUE){
     if(is.null(item_order)){
-      return(tidyr::unite(x$person_estimates, pattern, items, sep = '') )
+      tab <- tidyr::unite(x$person_estimates, pattern, items, sep = '')
     }
     if (all(item_order == 'by_diff')) {
       item_order <- x$person_estimates %>%
@@ -136,16 +136,16 @@ print.wizirt_pfa <- function(x, patterns = FALSE, item_order = NULL){
     }
 
 
-    return(tidyr::unite(x$person_estimates %>%
+    tab <- tidyr::unite(x$person_estimates %>%
                    dplyr::select(-items,
                                  tidyselect::all_of(items)),
-                 pattern, items, sep = ''))
+                 pattern, items, sep = '')
 
   } else {
-    return(x$person_estimates %>%
-             dplyr::select(-items))
+    tab <- x$person_estimates %>%
+             dplyr::select(-items)
   }
-
+  tab
 }
 
 #' Print method for wizirt assumption objects
@@ -155,24 +155,36 @@ print.wizirt_pfa <- function(x, patterns = FALSE, item_order = NULL){
 #' @method print wizirt_assume
 #' @export
 print.wizirt_assume <- function(x, type = 'all'){
+  if(!type %in% c("all", "ld", "unid", "rel", "abs")){
+    rlang::abort(glue::glue('Uknown type argument: "{type}"'))
+  }
   if(type == 'all'){
-    return(dplyr::bind_rows(x$unidim %>% dplyr::rename(pars = 'stat'),
+    tab <- dplyr::bind_rows(x$unidim %>% dplyr::rename(pars = 'stat'),
                      x$rel_fit %>% dplyr::filter(!stat %in% c("N", "n_pars")) %>% dplyr::rename(pars = 'stat', value = 'values'),
                      tibble::tibble(pars = c('Num LD pairs < .05'),
-                                    value = sum(assumptions$ld$pvals < .05))))
+                                    value = sum(assumptions$ld$pvals < .05)))
   }
   if(type == 'ld'){
-    return(x$ld)
+    tab <- x$ld
   }
   if(type == 'unid'){
-    return(x$unidim)
+    detect <- ifelse(assumptions$unidim$value[1] > 1, "Strong Multidimensionality",
+                     ifelse(assumptions$unidim$value[1] > .4, "Moderate Multidimensionality",
+                            ifelse(assumptions$unidim$value[1] > .2, "Weak Multidimensionality", "Essential Unidimensionality")))
+
+    assi <- ifelse(assumptions$unidim$value[2] < .25, "Essential Unidimensionality", "Essential Deviation from Unidimensionality")
+
+    ratio <- ifelse(assumptions$unidim$value[3] < .36, "Essential Unidimensionality", "Essential Deviation from Unidimensionality")
+
+    tab <-x$unidim %>% dplyr::mutate(Conclusion = c(detect, assi, ratio, NA, NA)) %>% dplyr::rename(Statistics = "stat", Value = "value")
+
   }
   if(type == 'rel'){
-    return(x$rel_fit)
+    tab <- x$rel_fit
   }
   if(type == 'abs'){
-    return(x$abs_fit)
+    tab <- x$abs_fit
   }
-  rlang::abort(glue::glue('Uknown type argument: "{type}"'))
 
+  tab
 }

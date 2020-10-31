@@ -5,7 +5,8 @@
 #' @param engine Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.
 #' @inheritParams fit_wizirt
 #' @export
-wizirt <- function(data, rownames = NULL, item_type = "Rasch", engine = "mirt", irt_pars = TRUE, tol = 1e-05){
+wizirt <- function(data, rownames = NULL, item_type = "Rasch", engine = "mirt", tol = 1e-05){
+  irt_pars = TRUE # irt_pars cannot equal false yet
   irt(item_type = item_type, irt_pars = irt_pars) %>%
     set_engine(engine = engine) %>%
     fit_wizirt(data = data)
@@ -16,11 +17,11 @@ wizirt <- function(data, rownames = NULL, item_type = "Rasch", engine = "mirt", 
 #' @description irt() is used to describe a model, it must be used in conjunction with set_engine(), and fit_wizirt().
 #' @param mode Must be 'regression' currently.
 #' @param item_type Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.
-#' @param irt_pars Logical. Should the traditional IRT parametrization be used? If false the slope-intercept form is used.
 #' @param rownames Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).
 #' @param tol Numeric. Convergence criterion. Currently only implemented when engine is mirt.
 #' @export
-irt <- function(mode = "regression", item_type = NULL, irt_pars = TRUE, rownames = NULL, tol = 1e-5){
+irt <- function(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e-5){
+  irt_pars = TRUE # irt_pars cannot equal false yet
   args <- list(item_type = rlang::enquo(item_type),
                irt_pars = rlang::enquo(irt_pars),
                rownames = rlang::enquo(rownames),

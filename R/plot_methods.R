@@ -224,13 +224,14 @@ plot.wizirt <- function(wizirt_fit,
   }
 
   if (grepl('info', type) & !grepl('tinfo', type) ) {
-    if(is.null(ifa)) {
-      ifa <- irt_item_fit(wizirt_fit)
-    }
-    df <- ifa$item_information
+    ip <- irf_probs(mod1)
+    df <- ip %>%
+      dplyr::left_join(mod1$fit$parameters$coefficients, by = "item") %>%
+      dplyr::mutate(info = (discrimination^2) * ( (y-guessing)^2/(1-guessing)^2 ) * ( (1-y)/(y) ) ) %>%
+      dplyr::select(-difficulty, -discrimination, -guessing) %>%
+    dplyr::filter(item %in% items)
 
-    plt_data[['info']] <- df %>%
-                                    dplyr::filter(item %in% items)
+    plt_data[['info']] <- df
 
     if(is.null(plt)){
       if (facets == FALSE){
@@ -266,7 +267,7 @@ plot.wizirt <- function(wizirt_fit,
 
   # Test Generally Plots
 
-  if (type == 'tinfo') {
+  if (type == 'tinfo'| grepl('tinfo', type) & grepl('SE', type)) {
     if(is.null(ifa)) {
       ifa <- irt_item_fit(wizirt_fit)
     }
@@ -278,8 +279,9 @@ plot.wizirt <- function(wizirt_fit,
 
       plt <- 'tinfo'
       p <- df %>%
-        ggplot2::ggplot(ggplot2::aes(x = theta, ymax = info)) +
-        ggplot2::geom_ribbon(ymin = 0, fill = "#094bab", alpha = .3, color = '#130d42') +
+        ggplot2::ggplot() +
+        ggplot2::geom_ribbon(ggplot2::aes(x = theta, ymax = info),
+                             ymin = 0, fill = "#094bab", alpha = .3, color = '#130d42') +
         ggplot2::theme_classic() +
         ggplot2::labs(title = 'Test Information Function')
   }
@@ -293,8 +295,9 @@ plot.wizirt <- function(wizirt_fit,
       plt <- 'theta'
 
       p <- df %>%
-        ggplot2::ggplot(ggplot2::aes(x = ability)) +
-        ggplot2::geom_density(fill = "#094bab",
+        ggplot2::ggplot() +
+        ggplot2::geom_density(ggplot2::aes(x = ability),
+                              fill = "#094bab",
                               alpha = .3,
                               color = '#130d42') +
         ggplot2::labs(title = 'Distribution of Person Abilities')
@@ -306,22 +309,23 @@ plot.wizirt <- function(wizirt_fit,
     }
   }
 
-  if (type == 'SE'| grepl('theta', type) & grepl('SE', type)) {
+  if (type == 'SE'| (grepl('theta', type) | grepl('tinfo', type)) & grepl('SE', type)) {
     df <- wizirt_fit$fit$parameters$persons %>%
-      dplyr::filter(ids %in% persons)
+      dplyr::filter(ids %in% persons) %>%
+      dplyr::distinct(ability, std_err)
     plt_data[['SE']] <- df
 
     if (is.null(plt)) {
       plt <- 'SE'
 
       p <- df %>%
-        ggplot2::ggplot(ggplot2::aes(x = ability, ymax = std_err)) +
-        ggplot2::geom_ribbon(ymin = 0, fill = '#566D81', alpha = .5) +
+        ggplot2::ggplot() +
+        ggplot2::geom_ribbon(ggplot2::aes(x = ability, ymax = std_err), ymin = 0, fill = '#566D81', alpha = .5) +
         ggplot2::labs(title = 'Standard Error of Measured Abilities')
     } else {
       plt <- paste(plt, 'SE', sep = '_')
-      p <- p + ggplot2::geom_line(ggplot2::aes(x = ability, y = std_err), lty = 2, data = df) +
-        ggplot2::labs(subtitle = 'Black dotted line is SE')
+      p <- p + ggplot2::geom_line(ggplot2::aes(x = ability, y = std_err), lty = 2, data = dfa) +
+        ggplot2::labs(subtitle = 'Black dotted line is SE', y = '')
     }
   }
 
@@ -394,12 +398,13 @@ plot.wizirt <- function(wizirt_fit,
     } else {
       p <- df %>%
         ggplot2::ggplot(ggplot2::aes(x = x, y = y)) +
-        ggplot2::geom_line() +
+        ggplot2::geom_line(ggplot2::aes(color = Aberrant)) +
         ggplot2::geom_ribbon(ggplot2::aes(ymax = ymax, ymin = ymin, fill = Aberrant), # working to add color to aberrant
                              alpha = .3) +
         ggplot2::facet_wrap(~ids) +
         ggplot2::ylim(c(0,1)) +
         ggplot2::theme(strip.text.x = ggplot2::element_text(margin = ggplot2::margin(0, 0, 2, 0))) +
+        ggplot2::scale_color_manual(values = c("#094bab", "#cc0c00")) +
         ggplot2::scale_fill_manual(values = c("#094bab", "#cc0c00")) +
         ggplot2::labs(title = "Person Response Functions",
                       x = "Item Difficulty",

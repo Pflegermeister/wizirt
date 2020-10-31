@@ -1,9 +1,9 @@
 #' A function for checking the assumptions of IRT.
 #' @description This function checks the assumptions of IRT. For unidimensionality the DETECT, RATIO, and ASSI statistics are calculated using [sirt::conf.detect()].
-#' For local dependence, the standardized LD statistic is calculated using [mirt::residuals-method()] and the correlation matrix is created using [ltm::rcor.test()].
+#' For local dependence, the standardized LD statistic is calculated using [mirt::residuals-method()] and the correlations are created using [ltm::rcor.test()].
 #' Relative fit calculates BIC, AIC, and several others using code from [mirt::anova-method()].
 #' Absolute fit is calculated only for models run with the mirt engine, using [mirt::M2()].
-#' See the documentation on those functions for more information.
+#' See the documentation on those functions for more information on calculation.
 #' @param wizirt_fit An object from fit_wizirt
 #' @param verbose Logical. Should the names of the other packages used in this function be printed? Default is FALSE.
 #' @return A list with tibbles of data in them.
