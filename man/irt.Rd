@@ -4,20 +4,12 @@
 \alias{irt}
 \title{Describe the model you will run}
 \usage{
-irt(
-  mode = "regression",
-  item_type = NULL,
-  irt_pars = TRUE,
-  rownames = NULL,
-  tol = 1e-05
-)
+irt(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e-05)
 }
 \arguments{
 \item{mode}{Must be 'regression' currently.}
 
 \item{item_type}{Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.}
-
-\item{irt_pars}{Logical. Should the traditional IRT parametrization be used? If false the slope-intercept form is used.}
 
 \item{rownames}{Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).}
 

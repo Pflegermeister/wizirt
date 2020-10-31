@@ -9,7 +9,6 @@ wizirt(
   rownames = NULL,
   item_type = "Rasch",
   engine = "mirt",
-  irt_pars = TRUE,
   tol = 1e-05
 )
 }
@@ -21,8 +20,6 @@ wizirt(
 \item{item_type}{Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.}
 
 \item{engine}{Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.}
-
-\item{irt_pars}{Logical. Should the traditional IRT parametrization be used? If false the slope-intercept form is used.}
 
 \item{tol}{Numeric. Convergence criterion. Currently only implemented when engine is mirt.}
 }

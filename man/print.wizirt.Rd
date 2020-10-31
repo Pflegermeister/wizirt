@@ -4,7 +4,7 @@
 \alias{print.wizirt}
 \title{Plot method for wizirt objects}
 \usage{
-\method{print}{wizirt}(x, type = "tech")
+\method{print}{wizirt}(x, type = "desc")
 }
 \arguments{
 \item{x}{an object returned from fit_wizirt().}
