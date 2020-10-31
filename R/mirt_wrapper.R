@@ -16,6 +16,7 @@ irt_mirt <- function(data,
                                 criteria = NULL,
                                 iterations = NULL,
                                 log_lik = NULL,
+                                abs_fit = NULL,
                                 df = get_df(item_type, data)),
               parameters = list(
                 coefficients = NULL,
@@ -53,11 +54,12 @@ irt_mirt <- function(data,
   out$estimation$log_lik = mirt_model@Fit$logLik
   out$estimation$iterations = mirt::extract.mirt(mirt_model, 'iterations')
   out$estimation$criteria = mirt_model@Options$TOL
+
+  out$estimation$abs_fit = mirt::M2(mirt_model)
+
   out$original_object = mirt_model
 
-
   out$parameters$coefficients = tibble::tibble(tibble::rownames_to_column(`colnames<-`(data.frame(mirt::coef(mirt_model, simplify = T, IRTpars = irt_pars)$items)[,c(2,1,3)], c("difficulty", "discrimination", 'guessing')), "item"))
-
 
   out$parameters$persons = dplyr::rename(tibble::as_tibble(mirt::fscores(mirt_model, full.scores.SE = T)), ability = "F1", std_err = "SE_F1" ) %>% dplyr::mutate(ids = rownames)
 

@@ -12,6 +12,7 @@ irt_ltm <- function(data, rownames = NULL, item_type = "Rasch", irt_pars = TRUE)
                                 criteria = NULL,
                                 iterations = NULL,
                                 log_lik = NULL,
+                                abs_fit = NULL,
                                 df = get_df(item_type, data)),
               parameters = list(
                 coefficients = NULL,

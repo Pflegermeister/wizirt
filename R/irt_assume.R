@@ -8,7 +8,7 @@ irt_assume <- function (wizirt_fit, verbose = FALSE) {
     message('Using pkgs:')
     message(glue::glue('  - sirt {packageVersion("sirt")} for DETECT, ASSI, RATIO and LD covariance'))
     message(glue::glue('  - ltm {packageVersion("ltm")} for LD'))
-    message(glue::glue('  - mirt {packageVersion("mirt")} for relative fit'))
+    message(glue::glue('  - mirt {packageVersion("mirt")} for relative fit and absolute fit'))
   }
 
 
@@ -44,7 +44,11 @@ irt_assume <- function (wizirt_fit, verbose = FALSE) {
 
   rel_fit <- irt_fit_stats(wizirt_fit)
 
-  out <- list(unidim = unidim, ld = ld, rel_fit = rel_fit, abs_fit = NULL) %>%
+  # Absolute Fit
+
+  abs_fit <- wizirt_fit$fit$estimation$abs_fit
+
+  out <- list(unidim = unidim, ld = ld, rel_fit = rel_fit, abs_fit = abs_fit) %>%
     `class<-`(c('wizirt_assume', class(.)))
 
   return(out)
