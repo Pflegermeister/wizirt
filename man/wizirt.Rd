@@ -4,7 +4,14 @@
 \alias{wizirt}
 \title{Estimate an IRT model}
 \usage{
-wizirt(data, rownames = NULL, item_type, engine, irt_pars = TRUE, tol = 1e-05)
+wizirt(
+  data,
+  rownames = NULL,
+  item_type = "Rasch",
+  engine = "mirt",
+  irt_pars = TRUE,
+  tol = 1e-05
+)
 }
 \arguments{
 \item{data}{An Person x Items matrix or dataframe of dichotomous response values (e.g. correct/incorrect). Rows are persons and columns are items, one row per person, one column per item. No other information allowed.}
