@@ -236,7 +236,7 @@ plot.wizirt <- function(wizirt_fit,
     if(is.null(plt)){
       if (facets == FALSE){
         p <- df %>%
-          ggplot2::ggplot(ggplot2::aes(x = theta,
+          ggplot2::ggplot(ggplot2::aes(x = x,
                                        y = info,
                                        color = item)) +
           ggplot2::geom_line() +
@@ -245,7 +245,7 @@ plot.wizirt <- function(wizirt_fit,
 
       } else {
         p <- df %>%
-          ggplot2::ggplot(ggplot2::aes(x = theta,
+          ggplot2::ggplot(ggplot2::aes(x = x,
                                        y = info)) +
           ggplot2::geom_line() +
           ggplot2::geom_line(color = '#130d42') +
@@ -255,7 +255,7 @@ plot.wizirt <- function(wizirt_fit,
       }
     } else { # plt != NULL
       plt <- paste(plt, 'info', sep = '_')
-      p <- p + ggplot2::geom_line(ggplot2::aes(x = theta,
+      p <- p + ggplot2::geom_line(ggplot2::aes(x = x,
                                                y = info,
                                                group = item),
                                   data = df)
