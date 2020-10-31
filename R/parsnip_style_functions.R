@@ -7,7 +7,7 @@
 #' @export
 wizirt <- function(data, rownames = NULL, item_type = "Rasch", engine = "mirt", tol = 1e-05){
   irt_pars = TRUE # irt_pars cannot equal false yet
-  irt(item_type = item_type, irt_pars = irt_pars) %>%
+  irt(item_type = item_type) %>%
     set_engine(engine = engine) %>%
     fit_wizirt(data = data)
 }
