@@ -9,9 +9,15 @@ irt_assume(wizirt_fit, verbose = FALSE)
 \arguments{
 \item{wizirt_fit}{An object from fit_wizirt}
 
-\item{verbose}{Logical. Should the names of the other packages used in this function be printed? Default is FALSE.
-#' @return A list with tibbles of data in them.}
+\item{verbose}{Logical. Should the names of the other packages used in this function be printed? Default is FALSE.}
+}
+\value{
+A list with tibbles of data in them.
 }
 \description{
-A function for checking the assumptions of IRT.
+This function checks the assumptions of IRT. For unidimensionality the DETECT, RATIO, and ASSI statistics are calculated using \code{\link[sirt:conf.detect]{sirt::conf.detect()}}.
+For local dependence, the standardized LD statistic is calculated using \code{\link[mirt:residuals-method]{mirt::residuals-method()}} and the correlation matrix is created using \code{\link[ltm:rcor.test]{ltm::rcor.test()}}.
+Relative fit calculates BIC, AIC, and several others using code from \code{\link[mirt:anova-method]{mirt::anova-method()}}.
+Absolute fit is calculated only for models run with the mirt engine, using \code{\link[mirt:M2]{mirt::M2()}}.
+See the documentation on those functions for more information.
 }

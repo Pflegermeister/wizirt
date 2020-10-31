@@ -1,7 +1,12 @@
 #' A function for checking the assumptions of IRT.
+#' @description This function checks the assumptions of IRT. For unidimensionality the DETECT, RATIO, and ASSI statistics are calculated using [sirt::conf.detect()].
+#' For local dependence, the standardized LD statistic is calculated using [mirt::residuals-method()] and the correlation matrix is created using [ltm::rcor.test()].
+#' Relative fit calculates BIC, AIC, and several others using code from [mirt::anova-method()].
+#' Absolute fit is calculated only for models run with the mirt engine, using [mirt::M2()].
+#' See the documentation on those functions for more information.
 #' @param wizirt_fit An object from fit_wizirt
 #' @param verbose Logical. Should the names of the other packages used in this function be printed? Default is FALSE.
-#' #' @return A list with tibbles of data in them.
+#' @return A list with tibbles of data in them.
 #' @export
 irt_assume <- function (wizirt_fit, verbose = FALSE) {
   if (verbose) {
@@ -32,8 +37,8 @@ irt_assume <- function (wizirt_fit, verbose = FALSE) {
     tibble::rownames_to_column("item_1") %>%
     tidyr::pivot_longer(cols = -item_1,
                         names_to = "item_2",
-                        values_to = "LD") %>%
-    dplyr::arrange(dplry::desc(LD)) %>% tidyr::drop_na()
+                        values_to = "LD_std") %>%
+    dplyr::arrange(dplry::desc(LD_std)) %>% tidyr::drop_na()
 
   ld <- ld %>% dplyr::left_join(ld2, by = c("item_1", "item_2"))
 

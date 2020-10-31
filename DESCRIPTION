@@ -8,6 +8,7 @@ Description: This package provides wrapper functions to a number of other IRT pa
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
 Imports: 
     mirt,
     parsnip,

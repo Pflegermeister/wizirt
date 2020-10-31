@@ -17,11 +17,11 @@ The plot method for wizirt objects.
 \details{
 type must be one of
 \itemize{
- \item{"tech"}{A table of technical information from the estimation of the model}
- \item{"desc"}{A table of summary information about the data and the estimated parameters.}
- \item{"na_item"}{A table of the number and proportion of missing data for each item.}
- \item{"na_person"}{A table of the number and proportion of missing data for each person.}
- \item{"item"}{A table of item statistics.}
- \item{"person"}{A table of person statistics.}
+\item{"tech"}{A table of technical information from the estimation of the model}
+\item{"desc"}{A table of summary information about the data and the estimated parameters.}
+\item{"na_item"}{A table of the number and proportion of missing data for each item.}
+\item{"na_person"}{A table of the number and proportion of missing data for each person.}
+\item{"item"}{A table of item statistics.}
+\item{"person"}{A table of person statistics.}
 }
 }
