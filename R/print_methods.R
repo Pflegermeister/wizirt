@@ -104,7 +104,7 @@ print.wizirt <- function(x, type = 'desc'){
 #' @method print wizirt_ifa
 #' @export
 print.wizirt_ifa <- function(x){
-  print(x$item_stats)
+  x$item_stats
 }
 
 #' Print method for wizirt item-fit objects

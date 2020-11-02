@@ -3,7 +3,6 @@
 #' @description irt_report
 #' @param mode Must be 'regression' currently.
 #' @param item_type Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.
-#' @param irt_pars Logical. Should the traditional IRT parametrization be used? If false the slope-intercept form is used.
 #' @param rownames Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).
 #' @param tol Numeric. Convergence criterion. Currently only implemented when engine is mirt.
 #' @param ifa_stats A character or character string identifying item-level fit measures. Must be at least one of c('Zh', 'X2', 'G2', 'infit'). More are coming very soon.  Default is 'X2'.
@@ -296,7 +295,7 @@ irt_html_report <- function(parameters){
                "```{r}",
                "library(reactable)",
                "assumptions$ld %>% ",
-               "  dplyr::mutate(dplyr::across(LD:ccov, round, 3)) %>% ",
+               "  dplyr::mutate(dplyr::across(LD_std:ccov, round, 3)) %>% ",
                "  dplyr::rename(`Item 1` = \"item_1\", `Item 2` = \"item_2\")  %>% ",
                "  reactable::reactable(filterable = T, ",
                "                       paginationType = \"simple\",",
@@ -327,7 +326,7 @@ irt_html_report <- function(parameters){
                "plot(my_model, type = 'tinfo')",
                "```",
                "",
-               "### Theta Estimats and Item Difficulties",
+               "### Theta Estimates and Item Difficulties",
                "",
                "```{r} ",
                "plot(my_model, type = 'theta_diff') + ggplot2::aes(color = type) + ggplot2::scale_color_manual(values = c(\"#020a23\", \"#566D81\"))",
@@ -430,6 +429,23 @@ irt_html_report <- function(parameters){
                "",
                "```",
                "",
+               "",
+               "",
+               "# References",
+               "",
+               "Estimation performed by the following packages:",
+               "",
+               "* Chung Y, Rabe-Hesketh S, Dorie V, Gelman A, Liu J (2013). “A nondegenerate penalized likelihood estimator for variance parameters in multilevel models.” _Psychometrika_, *78*(4), 685-709. <URL: http://gllamm.org/>.",
+               "",
+               "* Dimitris Rizopoulos (2006). ltm: An R package for Latent Variable Modelling and Item Response Theory Analyses, Journal of Statistical Software, 17 (5), 1-25. URL http://www.jstatsoft.org/v17/i05/",
+               "",
+               "* Jorge N. Tendeiro, Rob R. Meijer, A. Susan M. Niessen (2016). PerFit: An R Package for Person-Fit Analysis in IRT. Journal of Statistical Software, 74(5), 1-27. doi:10.18637/jss.v074.i05",
+               "",
+               "* Mair, P., Hatzinger, R., & Maier M. J. (2020). eRm: Extended Rasch Modeling. 1.0-1. https://cran.r-project.org/package=eRm",
+               "",
+               "* R. Philip Chalmers (2012). mirt: A Multidimensional Item Response Theory Package for the R Environment. Journal of Statistical Software, 48(6), 1-29. doi:10.18637/jss.v048.i06",
+               "",
+               "* Robitzsch, A. (2020). sirt: Supplementary Item Response Theory Models. R package version 3.9-4. https://CRAN.R-project.org/package=sirt",
                "",
                "<hr>",
                "",

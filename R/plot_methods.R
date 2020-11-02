@@ -224,9 +224,9 @@ plot.wizirt <- function(wizirt_fit,
   }
 
   if (grepl('info', type) & !grepl('tinfo', type) ) {
-    ip <- irf_probs(mod1)
+    ip <- irf_probs(wizirt_fit)
     df <- ip %>%
-      dplyr::left_join(mod1$fit$parameters$coefficients, by = "item") %>%
+      dplyr::left_join(wizirt_fit$fit$parameters$coefficients, by = "item") %>%
       dplyr::mutate(info = (discrimination^2) * ( (y-guessing)^2/(1-guessing)^2 ) * ( (1-y)/(y) ) ) %>%
       dplyr::select(-difficulty, -discrimination, -guessing) %>%
     dplyr::filter(item %in% items)
