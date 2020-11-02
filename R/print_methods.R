@@ -168,13 +168,13 @@ print.wizirt_assume <- function(x, type = 'all'){
     tab <- x$ld
   }
   if(type == 'unid'){
-    detect <- ifelse(assumptions$unidim$value[1] > 1, "Strong Multidimensionality",
-                     ifelse(assumptions$unidim$value[1] > .4, "Moderate Multidimensionality",
-                            ifelse(assumptions$unidim$value[1] > .2, "Weak Multidimensionality", "Essential Unidimensionality")))
+    detect <- ifelse(x$unidim$value[1] > 1, "Strong Multidimensionality",
+                     ifelse(x$unidim$value[1] > .4, "Moderate Multidimensionality",
+                            ifelse(x$unidim$value[1] > .2, "Weak Multidimensionality", "Essential Unidimensionality")))
 
-    assi <- ifelse(assumptions$unidim$value[2] < .25, "Essential Unidimensionality", "Essential Deviation from Unidimensionality")
+    assi <- ifelse(x$unidim$value[2] < .25, "Essential Unidimensionality", "Essential Deviation from Unidimensionality")
 
-    ratio <- ifelse(assumptions$unidim$value[3] < .36, "Essential Unidimensionality", "Essential Deviation from Unidimensionality")
+    ratio <- ifelse(x$unidim$value[3] < .36, "Essential Unidimensionality", "Essential Deviation from Unidimensionality")
 
     tab <-x$unidim %>% dplyr::mutate(Conclusion = c(detect, assi, ratio, NA, NA)) %>% dplyr::rename(Statistics = "stat", Value = "value")
 
