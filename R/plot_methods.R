@@ -112,10 +112,11 @@ plot.wizirt <- function(wizirt_fit,
 
     breaks <- quantile(wizirt_fit$fit$parameters$persons$ability,
                        seq(0,1,length.out = quads + 1))
+    if ( length(unique(breaks)) != quads+1) rlang::warn("Breaks are not unique. Decreasing quadratures.")
     df <- cbind(Ability = wizirt_fit$fit$parameters$persons$ability,
                 breaks = cut(wizirt_fit$fit$parameters$persons$ability,
-                             breaks,
-                             labels = 1:quads, include.lowest = T),
+                             unique(breaks),
+                             labels = 1:(length(unique(breaks))-1), include.lowest = T),
                 wizirt_fit$fit$data) %>%
       as.data.frame() %>%
       dplyr::group_by(breaks) %>%
@@ -162,11 +163,12 @@ plot.wizirt <- function(wizirt_fit,
   if (grepl('stand', type)) {
     breaks <- quantile(wizirt_fit$fit$parameters$persons$ability,
                        seq(0,1,length.out = quads + 1))
-    breaks[1] <- -Inf
+    if ( length(unique(breaks)) != quads+1) rlang::warn("Breaks are not unique. Decreasing quadratures.")
+
     df <- cbind(Ability = wizirt_fit$fit$parameters$persons$ability,
                 breaks = cut(wizirt_fit$fit$parameters$persons$ability,
-                             breaks,
-                             labels = 1:quads),
+                             unique(breaks),
+                             labels = 1:(length(unique(breaks))-1), include.lowest = T),
                 wizirt_fit$fit$data) %>%
       as.data.frame() %>%
       dplyr::group_by(breaks) %>%
@@ -181,8 +183,8 @@ plot.wizirt <- function(wizirt_fit,
       dplyr::mutate(Ability = round(Ability, 10)) %>%
       dplyr::left_join(irf_probs(wizirt_fit, theta = df$Ability) %>%
                          dplyr::rename(Ability = 'x') %>%
-                         dplyr::mutate(Ability = round(Ability, 10))) %>%
-      dplyr::mutate(stn_res = (Ability - y)/sd(Ability - y)) %>%
+                         dplyr::mutate(Ability = round(Ability, 10)), by = c("Ability", "item")) %>%
+      dplyr::mutate(stn_res = (Probability - y)/sd(Probability - y)) %>%
                                      dplyr::filter(item %in% items)
 
 
