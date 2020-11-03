@@ -217,9 +217,6 @@ make_irt <- function(){
     )
   )
 
-  parsnip::show_model_info("irt")
-
-
   parsnip::set_model_engine("irt", mode = "regression", eng = "ltm")
 
   parsnip::set_dependency("irt", eng = "ltm", pkg = "ltm")
@@ -252,5 +249,39 @@ make_irt <- function(){
       defaults = list()
     )
   )
+  # erm
+  parsnip::set_model_engine("irt", mode = "regression", eng = "eRm")
+
+  parsnip::set_dependency("irt", eng = "eRm", pkg = "eRm")
+
+  parsnip::set_model_arg(
+    model = "irt",
+    eng = "eRm",
+    parsnip = "item_type",
+    original = "item_type",
+    func = list(fun = "item_type"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "irt",
+    eng = "eRm",
+    parsnip = "irt_pars",
+    original = "irt_pars",
+    func = list(fun = "irt_pars"),
+    has_submodel = FALSE
+  )
+
+  parsnip::set_fit(
+    model = "irt",
+    eng = "eRm",
+    mode = "regression",
+    value = list(
+      interface = "matrix",
+      protect = c(''),
+      func = c(fun = "irt_erm"),
+      defaults = list()
+    )
+  )
+
 }
 

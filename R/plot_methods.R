@@ -112,11 +112,10 @@ plot.wizirt <- function(wizirt_fit,
 
     breaks <- quantile(wizirt_fit$fit$parameters$persons$ability,
                        seq(0,1,length.out = quads + 1))
-    breaks[1] <- -Inf
     df <- cbind(Ability = wizirt_fit$fit$parameters$persons$ability,
                 breaks = cut(wizirt_fit$fit$parameters$persons$ability,
                              breaks,
-                             labels = 1:quads),
+                             labels = 1:quads, include.lowest = T),
                 wizirt_fit$fit$data) %>%
       as.data.frame() %>%
       dplyr::group_by(breaks) %>%
