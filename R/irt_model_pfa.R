@@ -56,7 +56,7 @@ pfa_fit_subset <- function(bin, data = mlm_data, stats = pfa$spec$stats){
 get_bins <- function(wizirt_fit, bins){
   r <- wizirt_fit$fit$parameters$coefficients %>% nrow()
   remainder <- rep(1:0, times = c((r%%bins), bins-(r%%bins)))
-  items <- wizirt_fit$fit$parameters$coefficients %>% dplyr::arrange(difficulty) %>% dplyr::pull(item)
+  items <- wizirt_fit$fit$parameters$coefficients %>% dplyr::arrange(sample(seq_len(nrow(.)))) %>% dplyr::pull(item)
   data.frame(item = items,
              item_bin = rep(1:bins, times = (rep(r%/%bins, times = bins) + remainder)))
 }

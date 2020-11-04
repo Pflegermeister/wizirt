@@ -117,33 +117,33 @@ print.wizirt_ifa <- function(x){
 print.wizirt_pfa <- function(x, patterns = FALSE, item_order = NULL){
 
   items <- x$person_estimates %>%
-    dplyr::select(-dplyr::contains(c("ability", "std_err", "ids", x$spec$stats))) %>%
+    dplyr::select(-dplyr::contains(c("ability", "std_err", "ids", x$spec$stats, "flagged"))) %>%
     colnames()
 
-  if(patterns == TRUE){
+  if(patterns){
     if(is.null(item_order)){
-      tab <- tidyr::unite(x$person_estimates, pattern, items, sep = '')
-    }
-    if (all(item_order == 'by_diff')) {
+      item_order <- items
+    } else if (all(item_order == 'by_diff')) {
       item_order <- x$person_estimates %>%
         dplyr::select(items) %>%
         colMeans(na.rm = T) %>%
         sort(decreasing = T) %>% names()
-    } else {
-      item_order <- x$person_estimates %>%
-        dplyr::select(items) %>%
+    } else if(is.numeric(item_order)){
+      item_order <- items[item_order]
+    }else {
+
+      item_order <- x$person_estimates  %>%
         dplyr::select(tidyselect::all_of(item_order)) %>% names()
     }
 
 
-    tab <- tidyr::unite(x$person_estimates %>%
-                   dplyr::select(-items,
-                                 tidyselect::all_of(items)),
-                 pattern, items, sep = '')
+    tab <- tidyr::unite(x$person_estimates,
+                 pattern, item_order, sep = '') %>%
+      dplyr::select(dplyr::contains(c("ability", "std_err", "ids", x$spec$stats, "flagged", "pattern")))
 
   } else {
     tab <- x$person_estimates %>%
-             dplyr::select(-items)
+             dplyr::select(- tidyselect::all_of(items))
   }
   tab
 }

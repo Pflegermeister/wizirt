@@ -475,8 +475,9 @@ plot.wizirt <- function(wizirt_fit,
 #' @param type Character. Currently, can be 'obs', 'trace', 'info', 'resid', 'stand', 'tinfo', 'theta', 'diff', 'theta_diff', 'np_prf', 'ld', or 'ld_pairs'.
 #' @param items_per Numeric. How many items to plot per page?
 #' @param persons_per Numeric. How many persons to plot per page?
+#' @param pfa An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.
 #' @export
-plot_wrap <- function(object, type, items_per = NULL, persons_per = NULL){
+plot_wrap <- function(object, type, items_per = NULL, persons_per = NULL, pfa = NULL){
   p <- list()
   rem <- ifelse(is.null(items_per),
                 nrow(object$fit$data)%/%persons_per,
@@ -486,11 +487,16 @@ plot_wrap <- function(object, type, items_per = NULL, persons_per = NULL){
   } else{
     if (!is.null(items_per)){
       for( i in seq_len(rem+1)){
+        if ((seq_len(items_per) + items_per*(i-1))[1] > ncol(object$fit$data)) {return(p)}
         p[[i]] <- plot(object, type = type, items = seq_len(items_per) + items_per*(i-1))
       }
     } else {
-      for( i in seq_len(rem+1)){
-        p[[i]] <- plot(object, type = type, persons = seq_len(persons_per) + persons_per*(i-1))
+      for( i in seq_len(rem + 1)){
+        if ((seq_len(persons_per) + persons_per*(i-1))[1] > nrow(object$fit$data)) {return(p)}
+        p[[i]] <- plot(object,
+                       type = type,
+                       persons = seq_len(persons_per) + persons_per*(i-1),
+                       pfa = pfa)
       }
     }
 

@@ -130,7 +130,7 @@ irt_person_fit <- function(wizirt_fit,
   }
 
   flagged = (dplyr::bind_rows(flagged) %>% dplyr::rowwise() %>% rowSums()) > 0
-
+  out$person_estimates$flagged = flagged
 
 
 
