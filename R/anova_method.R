@@ -12,7 +12,7 @@ anova.wizirt <- function(x, y = NULL){
     return(ret)
   }
 
-  df <- x$fit$estimation$df - y$fit$estimation$df
+  df <- y$fit$estimation$df - x$fit$estimation$df
 
   if(df < 0){
     temp <- x
@@ -25,7 +25,7 @@ anova.wizirt <- function(x, y = NULL){
       y <- temp
     }
   }
-  df <- x$fit$estimation$df - y$fit$estimation$df
+  df <- y$fit$estimation$df - x$fit$estimation$df
 
   stats1 <- irt_fit_stats(x)
   stats1 <- stats1 %>% tidyr::pivot_wider(names_from = stat, values_from = values)
