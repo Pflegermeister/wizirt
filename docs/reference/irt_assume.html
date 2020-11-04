@@ -47,7 +47,11 @@
 
 
 <meta property="og:title" content="A function for checking the assumptions of IRT. — irt_assume" />
-<meta property="og:description" content="A function for checking the assumptions of IRT." />
+<meta property="og:description" content="This function checks the assumptions of IRT. For unidimensionality the DETECT, RATIO, and ASSI statistics are calculated using sirt::conf.detect().
+For local dependence, the standardized LD statistic is calculated using mirt::residuals-method() and the correlations are created using ltm::rcor.test().
+Relative fit calculates BIC, AIC, and several others using code from mirt::anova-method().
+Absolute fit is calculated only for models run with the mirt engine, using mirt::M2().
+See the documentation on those functions for more information on calculation." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -80,7 +84,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wizirt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -94,6 +98,24 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/complete_vignette.html">wizirt Overview</a>
+    </li>
+    <li>
+      <a href="../articles/deayala_vignette.html">Vignette Based on De Ayala, 2009</a>
+    </li>
+    <li>
+      <a href="../articles/rupp_vignette.html">Demonstrating Rupp's Framework</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -120,7 +142,11 @@
     </div>
 
     <div class="ref-description">
-    <p>A function for checking the assumptions of IRT.</p>
+    <p>This function checks the assumptions of IRT. For unidimensionality the DETECT, RATIO, and ASSI statistics are calculated using <code><a href='https://rdrr.io/pkg/sirt/man/conf.detect.html'>sirt::conf.detect()</a></code>.
+For local dependence, the standardized LD statistic is calculated using <code><a href='https://rdrr.io/pkg/mirt/man/residuals-method.html'>mirt::residuals-method()</a></code> and the correlations are created using <code><a href='https://rdrr.io/pkg/ltm/man/rcor.test.html'>ltm::rcor.test()</a></code>.
+Relative fit calculates BIC, AIC, and several others using code from <code><a href='https://rdrr.io/pkg/mirt/man/anova-method.html'>mirt::anova-method()</a></code>.
+Absolute fit is calculated only for models run with the mirt engine, using <code><a href='https://rdrr.io/pkg/mirt/man/M2.html'>mirt::M2()</a></code>.
+See the documentation on those functions for more information on calculation.</p>
     </div>
 
     <pre class="usage"><span class='fu'>irt_assume</span>(<span class='kw'>wizirt_fit</span>, verbose = <span class='fl'>FALSE</span>)</pre>
@@ -134,11 +160,13 @@
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Logical. Should the names of the other packages used in this function be printed? Default is FALSE.
-#' @return A list with tibbles of data in them.</p></td>
+      <td><p>Logical. Should the names of the other packages used in this function be printed? Default is FALSE.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list with tibbles of data in them.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

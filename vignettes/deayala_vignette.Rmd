@@ -1,0 +1,163 @@
+---
+title: "Vignette Based on De Ayala, 2009"
+author: "Isaac Pfleger"
+date: "11/4/2020"
+output: html_document
+---
+
+This vignette demonstrates the use of the wizirt package by following loosely the example in chapters 2-6 of De Ayala (2009) with particular emphasis on chapters 2-4. It is important to note that wizirt does relatively few calculations on its own. Instead, wizirt provides a common syntax that is used to work with other packages. Estimation is done invisibly using packages like mirt, ltm, sirt, and PerFit. See the wizirt package documentation for information. 
+
+For this vignette we use the following packages: 
+
+```{r, message = FALSE}
+library(wizirt)
+library(mirt)
+```
+
+
+The data that De Ayala used is available in the mirt package. It is response data from a five-item math test. These responses can be loaded into R using the following code: 
+
+
+```{r, warning = FALSE}
+data("deAyala")
+responses <- expand.table(deAyala)
+
+```
+
+
+In chapter 2, De Ayala first estimates a Rasch model. We can do this in wizirt:
+
+
+```{r, warning = FALSE}
+mod1 <- wizirt(responses, item_type = "Rasch", engine = "mirt")
+```
+
+
+Here we have first identified our data. The data must be a persons by items matrix or data frame of dichotomous responses. The item_type argument defines whether the model is a Rasch, 1PL, 2PL, or 3PL model. The engine argument specifies what package does the parameter estimation behind the scenes. We choose mirt as the engine because it is fast. 
+After running the model, De Ayala presents some summary statistics,
+ 
+
+```{r, warning = FALSE}
+print(mod1, type = "desc") %>% reactable::reactable()
+```
+
+
+and some technical information:
+
+
+```{r, warning = FALSE}
+print(mod1, type = "tech") %>% reactable::reactable()
+```
+
+
+The technical information includes information about the model specified, including the code run behind the scenes. It also provides information about convergence. 
+In this same chapter, De Ayala mentions three assumptions for IRT:
+
+-	Unidimensionality
+
+-	Conditional or local independence
+
+-	Functional form
+
+In wizirt, evidence for each of these assumptions can be estimated using the function irt_assume():
+
+
+```{r, warning = FALSE}
+assumptions <- irt_assume(mod1)
+```
+
+
+The evidence for each assumption can be extracted from the model using the print() function in conjunction with the type argument. For example, if we want information for the unidimensionality we can write
+
+
+```{r, warning = FALSE}
+print(assumptions, type = "unid") %>% reactable::reactable()
+```
+
+
+This displays the DETECT (xxxx), ASSI (xxxx), and RATIO (xxxx) statistics as calculated by sirt::conf.detect(), as well as the conclusion that can be drawn from each statistic. 
+
+Conditional independence can be displayed in a similar way using
+
+```{r, warning = FALSE}
+print(assumptions, type = "ld") %>% reactable::reactable()
+```
+
+
+This displays a table with standardized LD statistics and p-values as calculated by mirt::residuals-method() and correlations as calculated ltm::rcor.test(). This can be used to identify pairs of items that potentially violate this assumption. There is also a plot method that can be used for the same purpose:
+
+ 
+```{r, warning = FALSE}
+plot(mod1, type = 'ld_pairs')
+```
+
+Information about fit to the functional form is available in wizirt through several absolute, relative, person, and item fit statistics.  Currently, absolute fit statistics are only available for models generated using the mirt engine. These statistics can be displayed using the type = "abs" argument for absolute fit measures and type = "rel" for relative fit measures. 
+
+```{r, warning = FALSE}
+print(assumptions, type = "abs")
+
+print(assumptions, type = "rel") %>% reactable::reactable()
+```
+
+
+
+Person-fit and item fit statistics are available through the irt_person_fit() and irt_item_fit() respectively. Both functions offer a stats option. To be consistent we select infit and outfit statistics using stats = "infit". The output can be displayed using the print function. For the person fit statistics it is useful to include the arguments patterns = TRUE, and item_order = "by_diff" as arguments to the print function. In my code here I also remove individuals who have identical response patterns to make the output easier to read. I do this using dplyr. 
+
+
+```{r, warning = FALSE}
+pfa <- irt_person_fit(mod1, stats = c("infit", "Ht"))
+
+persons <- print(pfa, patterns = T, item_order = "by_diff") %>% dplyr::distinct(ability, std_err, infit, outfit, pattern, .keep_all = T)
+
+persons %>% reactable::reactable()
+
+ifa <- irt_item_fit(mod1, stats = "infit")
+print(ifa) %>% reactable::reactable()
+```
+
+A number of plots can be used to help diagnose person and item fit as well. These include person response functions:
+
+
+```{r, warning = FALSE}
+plot(mod1, type = "np_prf", persons = persons$ids, pfa = pfa)
+```
+
+Notice the plot type is "np_prf". This stands for nonparametric person response function. The persons argument is here used to present response functions for unique response patterns only. Additionally the pfa argument is used to pass the previously estimated pfa object into the plot function so that it doesn"t have to be called by the function.  
+Item response functions can be called using the type ="trace" argument. Which items to plot can also be specified either by column-wise position in the data or by the item name using the items argument. 
+
+
+```{r, warning = FALSE}
+plot(mod1, type = "trace", items = c(1,3,5))
+```
+
+Other information can be added to these plots by adding tags to the plot type. For example, to plot the item residuals add "resid" to the plot type. To show the observed values on the item by the person abilities, add "obs" to the type. Punctuation and spaces can be added to make the plot type more readable.
+
+
+```{r, warning = FALSE}
+plot(mod1, type = "obs trace", items = c(1,3,5), persons = persons$ids)
+```
+
+De Ayala looks at plots of the item and test information. This can be done by specifying the type as "info" and "tinfo" respectively. To force all item information functions to be plotted on the same line, specify the facets argument as FALSE. The standard error of the estimate can be added to the test information plot by adding "SE" to the type.
+
+```{r, warning = FALSE}
+plot(mod1, type = 'info', facets = FALSE)
+plot(mod1, type = "tinfo")
+```
+
+All that has been run in this vignette applies to 1PL, 2PL, and 3PL models as well (though the infit and outfit statistics don't apply to non-Rasch models). These other models can be run using
+
+```{r, warning = FALSE}
+mod2 <- wizirt(responses, item_type = "1PL")
+mod3 <- wizirt(responses, item_type = "2PL")
+```
+
+They can then be compared using the anova function:
+
+
+```{r, warning = FALSE}
+anova(mod1, mod2)
+
+anova(mod2, mod3)
+```
+
+De Ayala, R. J. (2009). *The Theory and Practice of Item Response Theory*. Guilford Publications.

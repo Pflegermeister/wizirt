@@ -1,0 +1,73 @@
+---
+title: "Demonstrating Rupp's Framework"
+author: "Isaac Pfleger"
+date: "11/2/2020"
+output: html_document
+---
+
+Rupp (2013) created a framework to assist researchers in identifying and handling person-misfit in item response theory (IRT). Rupp's framework consists of five steps, 
+
+(a) statistical detection using local and global fit measures (either parametric or nonparametric), 
+
+(b) numerical tabulation, or summarization of the incidence of each type of aberrant response pattern, 
+
+(c) graphical exploration such as person response functions (PRFs), 
+
+(d) quantitative explanation using additional modeling, and 
+
+(e) qualitative explanation. 
+
+The wizirt package is designed to facilitate the wider spread use of this framework in Psychometric research. With this end in mind, this vignette walks through the use of wizirt for PFA as desccribed by Rupp (2013).
+
+First, users need to load wizirt.
+
+```{r, message = FALSE}
+library(wizirt)
+```
+
+The data used in this example are not publicly available, but a practice data set is available in wizirt. 
+
+```{r, echo = FALSE, message = FALSE}
+data <- readr::read_csv("C:\\Users\\Owner\\Documents\\Dissertation\\compare software\\data\\Scores_F2.csv")
+responses <- data[1:50 ,174:223]
+```
+
+After loading wizirt, users can run a model with the wizirt function
+
+```{r}
+wizirt_fit <- wizirt::wizirt(data = responses, item_type = "Rasch")
+```
+
+Here I specify my data and I designate the model as a Rasch model.  The first step of Rupp's framework asks for global and local person-fit statistics. At this time, wizirt does not calculate local person-fit, but global fit statisics can be calculated using the irt_person_fit() function. 
+
+```{r}
+pfa <- irt_person_fit(wizirt_fit, stats = c("Ht")) 
+```
+
+These fit statistics, as well as the person abilities and the response patterns (step 2) can be displayed using the print() function.
+
+```{r}
+print(pfa, patterns = T, item_order = "by_diff") %>% 
+  dplyr::mutate(dplyr::across(c(ability, std_err, Ht, Ht_cut), .fns = round, 2)) %>% 
+  reactable::reactable()
+```
+
+By specifying the item order as "by_diff" the responses patterns are now ordered by the difficulty of the item.
+
+Rupp's step 3 asks for person-fit to be explored graphically. The nonparametric person response function is used for this in wizirt. 
+
+```{r}
+plot(wizirt_fit, type = "np_prf")
+```
+
+Rupp's step four instructs researchers to try to explain reasons for person misfit. This is done with the irt_model_pfa() function, which allows for the inclusion of predictors. 
+
+```{r}
+mod <- irt_model_pfa(wizirt_fit, pfa, bins = 10, predictors = lapply(data[1:50 ,c("School", "center")], scale) )
+
+mod$icc
+summary(mod$models$Ht)
+```
+
+
+These first four steps should be used in conjunction with a qualitative explanation step, something that cannot be done in wizirt. 

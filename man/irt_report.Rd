@@ -14,7 +14,6 @@ irt_report(
   item_type = "Rasch",
   rownames = NULL,
   tol = 1e-05,
-  irt_pars = TRUE,
   ifa_stats = c("X2"),
   pfa_predictors = NULL,
   pfa_bins = 5,
@@ -27,8 +26,6 @@ irt_report(
 \item{rownames}{Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).}
 
 \item{tol}{Numeric. Convergence criterion. Currently only implemented when engine is mirt.}
-
-\item{irt_pars}{Logical. Should the traditional IRT parametrization be used? If false the slope-intercept form is used.}
 
 \item{ifa_stats}{A character or character string identifying item-level fit measures. Must be at least one of c('Zh', 'X2', 'G2', 'infit'). More are coming very soon.  Default is 'X2'.}
 

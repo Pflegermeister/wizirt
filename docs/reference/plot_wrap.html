@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wizirt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -94,6 +94,24 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/complete_vignette.html">wizirt Overview</a>
+    </li>
+    <li>
+      <a href="../articles/deayala_vignette.html">Vignette Based on De Ayala, 2009</a>
+    </li>
+    <li>
+      <a href="../articles/rupp_vignette.html">Demonstrating Rupp's Framework</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -123,7 +141,7 @@
     <p>This function helps to break the plots into several plots when many items or persons are present.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_wrap</span>(<span class='kw'>object</span>, <span class='kw'>type</span>, items_per = <span class='kw'>NULL</span>, persons_per = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>plot_wrap</span>(<span class='kw'>object</span>, <span class='kw'>type</span>, items_per = <span class='kw'>NULL</span>, persons_per = <span class='kw'>NULL</span>, pfa = <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,6 +161,10 @@
     <tr>
       <th>persons_per</th>
       <td><p>Numeric. How many persons to plot per page?</p></td>
+    </tr>
+    <tr>
+      <th>pfa</th>
+      <td><p>An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.</p></td>
     </tr>
     </table>
 

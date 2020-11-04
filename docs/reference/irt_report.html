@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wizirt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -94,6 +94,24 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/complete_vignette.html">wizirt Overview</a>
+    </li>
+    <li>
+      <a href="../articles/deayala_vignette.html">Vignette Based on De Ayala, 2009</a>
+    </li>
+    <li>
+      <a href="../articles/rupp_vignette.html">Demonstrating Rupp's Framework</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -133,7 +151,6 @@
   item_type = <span class='st'>"Rasch"</span>,
   rownames = <span class='kw'>NULL</span>,
   tol = <span class='fl'>1e-05</span>,
-  irt_pars = <span class='fl'>TRUE</span>,
   ifa_stats = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"X2"</span>),
   pfa_predictors = <span class='kw'>NULL</span>,
   pfa_bins = <span class='fl'>5</span>,
@@ -154,10 +171,6 @@
     <tr>
       <th>tol</th>
       <td><p>Numeric. Convergence criterion. Currently only implemented when engine is mirt.</p></td>
-    </tr>
-    <tr>
-      <th>irt_pars</th>
-      <td><p>Logical. Should the traditional IRT parametrization be used? If false the slope-intercept form is used.</p></td>
     </tr>
     <tr>
       <th>ifa_stats</th>

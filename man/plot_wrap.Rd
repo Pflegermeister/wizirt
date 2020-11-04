@@ -4,7 +4,7 @@
 \alias{plot_wrap}
 \title{A funirction for handling large numbers of students and items in plots.}
 \usage{
-plot_wrap(object, type, items_per = NULL, persons_per = NULL)
+plot_wrap(object, type, items_per = NULL, persons_per = NULL, pfa = NULL)
 }
 \arguments{
 \item{object}{An object of class wizirt_fit.}
@@ -14,6 +14,8 @@ plot_wrap(object, type, items_per = NULL, persons_per = NULL)
 \item{items_per}{Numeric. How many items to plot per page?}
 
 \item{persons_per}{Numeric. How many persons to plot per page?}
+
+\item{pfa}{An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.}
 }
 \description{
 This function helps to break the plots into several plots when many items or persons are present.
