@@ -453,7 +453,7 @@ plot.wizirt <- function(wizirt_fit,
 
     p <- df %>%
       tidyr::pivot_longer(cols = item_1:item_2, values_to = 'item') %>%
-      ggplot2::ggplot(ggplot2::aes(x = LD, y = item)) +
+      ggplot2::ggplot(ggplot2::aes(x = LD_std, y = item)) +
       ggplot2::geom_boxplot(fill = "#566D81", alpha = .8) +
       ggplot2::labs(title = "Local Dependence by Item", y = "Item") +
       ggplot2::theme_classic()
