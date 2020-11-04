@@ -32,7 +32,7 @@ anova.wizirt <- function(x, y = NULL){
   stats2 <- irt_fit_stats(y)
   stats2 <- stats2 %>% tidyr::pivot_wider(names_from = stat, values_from = values)
 
-  X2 <- 2*stats1$log_lik[1] - 2*stats2$log_lik[1]
+  X2 <- 2*stats2$log_lik[1] - 2*stats1$log_lik[1]
 
     ret <- data.frame(AIC = c(stats1$AIC[1], stats2$AIC[1]),
                       AICc = c(stats1$AICc[1], stats2$AICc[1]),
