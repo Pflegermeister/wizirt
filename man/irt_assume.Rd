@@ -21,3 +21,12 @@ Relative fit calculates BIC, AIC, and several others using code from \code{\link
 Absolute fit is calculated only for models run with the mirt engine, using \code{\link[mirt:M2]{mirt::M2()}}.
 See the documentation on those functions for more information on calculation.
 }
+\examples{
+data("responses")
+my_model <- wizirt(data = responses[,-1])
+assumptions <- irt_assume(my_model)
+print(assumptions, type = 'rel')
+print(assumptions, type = 'abs')
+print(assumptions, type = 'unid')
+print(assumptions, type = 'ld')
+}

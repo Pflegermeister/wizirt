@@ -12,8 +12,7 @@
   facets = TRUE,
   quads = 10,
   return_data = FALSE,
-  pfa = NULL,
-  ifa = NULL
+  pfa = NULL
 )
 }
 \arguments{
@@ -30,10 +29,25 @@
 \item{return_data}{Logical. Should the plot data be returned. If TRUE returns a list with the plot and the data.}
 
 \item{pfa}{An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.}
-
-\item{<-}{An object from irt_item_fit(). If omitted, irt_item_fit() is called within the function with the default settings.}
 }
 \description{
 All plots in wizirt use ggplot2 as a backend. Type 'theta_diff' also uses gghalves. For the item-focused plots, the types can be included in the same string to overlay the plots (e.g. resid_trace).
 For large numbers of persons and/or items, you may want to consider limiting the number printed at a time on some plots.
+}
+\examples{
+data("responses")
+my_model <- wizirt(data = responses[,-1])
+plot(my_model, type = 'tinfo')
+plot(my_model, type = 'theta')
+plot(my_model, type = 'diff')
+plot(my_model, type = 'theta_diff')
+plot(my_model, type = 'obs', items = 1:4)
+plot(my_model, type = 'trace', items = 1:4)
+plot(my_model, type = 'trace', items = 1:4, facets = FALSE)
+plot(my_model, type = 'resid', items = 1:4)
+plot(my_model, type = 'stand', items = 1:4)
+plot(my_model, type = 'info', items = 1:4)
+plot(my_model, type = 'resid_trace', items = 1:4)
+plot(my_model, type = 'np_prf', facets = T, persons = 1:4)
+plot(my_model, type = 'np_prf', facets = F)
 }

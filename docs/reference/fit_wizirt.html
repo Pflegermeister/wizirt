@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wizirt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -156,7 +156,33 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>Returns a list of class wizirt.
+<em>spec</em> is a list of information for the parsnip backend. printing spec prints a summary of the model run.
+<em>elapsed</em> contains the time it took the model to run.
+<em>fit</em> contains the model information:</p><ul>
+<li><p><em>data</em> is the data passed to the model</p></li>
+<li><p><em>model</em> contains model fit information, including:</p></li>
+</ul>
+<ul>
+<li><p><em>engine</em> a list with values pkg (the package used for estimation), ver (pkg version), func (functiong used from pkg), and call (call made to pkg)</p></li>
+<li><p><em>n_factors</em> the number of factors estimated</p></li>
+<li><p><em>item_type</em> the item type passed to wizirt (Rasch, 1PL, 2PL, or 3PL).</p></li>
+</ul>
+<ul>
+<li><p><em>estimation</em> a list with information related to convergence. <em>convergence</em> a T/F value of whether the model converged, <em>method</em> the estimation method, <em>criteria</em> the convergence criteria, <em>iterations</em> the number of iterations it took for the model to converge, <em>log_lik</em> the loglikelihood at convergence, <em>abs_fit</em> the absolute fit of the model, <em>df</em> the number of parameters estimated.</p></li>
+<li><p><em>parameters</em> a list of estimated parameters. <em>coefficients</em> is a data frame of estimated item-statistics and <em>persons</em> is a data frame of estimated person statistics.</p></li>
+<li><p><em>original_object</em> is the object returned from the engine.</p></li>
+</ul>
+
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"responses"</span>)
+<span class='kw'>my_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='irt.html'>irt</a></span>(item_type = <span class='st'>"Rasch"</span>) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(engine = <span class='st'>"mirt"</span>) <span class='op'>%&gt;%</span>
+  <span class='fu'>fit_wizirt</span>(data = <span class='kw'>responses</span>[,<span class='op'>-</span><span class='fl'>1</span>])
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

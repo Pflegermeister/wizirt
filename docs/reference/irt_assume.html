@@ -84,7 +84,7 @@ See the documentation on those functions for more information on calculation." /
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wizirt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -168,6 +168,48 @@ See the documentation on those functions for more information on calculation.</p
 
     <p>A list with tibbles of data in them.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"responses"</span>)
+<span class='kw'>my_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='wizirt.html'>wizirt</a></span>(data = <span class='kw'>responses</span>[,<span class='op'>-</span><span class='fl'>1</span>])
+<span class='kw'>assumptions</span> <span class='op'>&lt;-</span> <span class='fu'>irt_assume</span>(<span class='kw'>my_model</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>assumptions</span>, type = <span class='st'>'rel'</span>)
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 8 x 2</span><span>
+#&gt;   stat    values
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> log_lik -</span><span style='color: #BB0000;text-decoration: underline;'>1</span><span style='color: #BB0000;'>026.</span><span>
+#&gt; </span><span style='color: #555555;'>2</span><span> N          75 
+#&gt; </span><span style='color: #555555;'>3</span><span> n_pars     25 
+#&gt; </span><span style='color: #555555;'>4</span><span> AIC      </span><span style='text-decoration: underline;'>2</span><span>101.
+#&gt; </span><span style='color: #555555;'>5</span><span> AICc     </span><span style='text-decoration: underline;'>2</span><span>128.
+#&gt; </span><span style='color: #555555;'>6</span><span> BIC      </span><span style='text-decoration: underline;'>2</span><span>159.
+#&gt; </span><span style='color: #555555;'>7</span><span> SABIC    </span><span style='text-decoration: underline;'>2</span><span>080.
+#&gt; </span><span style='color: #555555;'>8</span><span> HQ       </span><span style='text-decoration: underline;'>2</span><span>124.</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>assumptions</span>, type = <span class='st'>'abs'</span>)
+</div><div class='output co'>#&gt;             M2  df         p      RMSEA RMSEA_5   RMSEA_95     SRMSR       TLI
+#&gt; stats 303.2375 300 0.4368765 0.01207609       0 0.04630653 0.1190909 0.9524023
+#&gt;             CFI
+#&gt; stats 0.9524023</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>assumptions</span>, type = <span class='st'>'unid'</span>)
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 5 x 3</span><span>
+#&gt;   Statistics  Value Conclusion                 
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                      
+#&gt; </span><span style='color: #555555;'>1</span><span> DETECT     -</span><span style='color: #BB0000;'>0.62</span><span>  Essential Unidimensionality
+#&gt; </span><span style='color: #555555;'>2</span><span> ASSI       -</span><span style='color: #BB0000;'>0.290</span><span> Essential Unidimensionality
+#&gt; </span><span style='color: #555555;'>3</span><span> RATIO      -</span><span style='color: #BB0000;'>0.36</span><span>  Essential Unidimensionality
+#&gt; </span><span style='color: #555555;'>4</span><span> MADCOV100   1.69  </span><span style='color: #BB0000;'>NA</span><span>                         
+#&gt; </span><span style='color: #555555;'>5</span><span> MCOV100    -</span><span style='color: #BB0000;'>0.62</span><span>  </span><span style='color: #BB0000;'>NA</span><span>                         </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>assumptions</span>, type = <span class='st'>'ld'</span>)
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 300 x 5</span><span>
+#&gt;    item_1 item_2 LD_std    pvals   ccov
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> A      W       0.405 0.000</span><span style='text-decoration: underline;'>312</span><span> 0.024</span><span style='text-decoration: underline;'>1</span><span>
+#&gt; </span><span style='color: #555555;'> 2</span><span> J      P       0.399 0.000</span><span style='text-decoration: underline;'>398</span><span> 0.057</span><span style='text-decoration: underline;'>8</span><span>
+#&gt; </span><span style='color: #555555;'> 3</span><span> K      W       0.363 0.001</span><span style='text-decoration: underline;'>39</span><span>  0.028</span><span style='text-decoration: underline;'>6</span><span>
+#&gt; </span><span style='color: #555555;'> 4</span><span> A      S       0.331 0.003</span><span style='text-decoration: underline;'>71</span><span>  0.051</span><span style='text-decoration: underline;'>2</span><span>
+#&gt; </span><span style='color: #555555;'> 5</span><span> A      K       0.315 0.005</span><span style='text-decoration: underline;'>92</span><span>  0.025</span><span style='text-decoration: underline;'>5</span><span>
+#&gt; </span><span style='color: #555555;'> 6</span><span> O      T       0.309 0.006</span><span style='text-decoration: underline;'>95</span><span>  0.033</span><span style='text-decoration: underline;'>8</span><span>
+#&gt; </span><span style='color: #555555;'> 7</span><span> D      I       0.303 0.008</span><span style='text-decoration: underline;'>16</span><span>  0.038</span><span style='text-decoration: underline;'>2</span><span>
+#&gt; </span><span style='color: #555555;'> 8</span><span> H      W       0.295 0.010</span><span style='text-decoration: underline;'>1</span><span>   0.012</span><span style='text-decoration: underline;'>8</span><span>
+#&gt; </span><span style='color: #555555;'> 9</span><span> M      Q       0.285 0.013</span><span style='text-decoration: underline;'>2</span><span>   0.045</span><span style='text-decoration: underline;'>6</span><span>
+#&gt; </span><span style='color: #555555;'>10</span><span> H      P       0.282 0.014</span><span style='text-decoration: underline;'>2</span><span>   0.024</span><span style='text-decoration: underline;'>3</span><span>
+#&gt; </span><span style='color: #555555;'># ... with 290 more rows</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

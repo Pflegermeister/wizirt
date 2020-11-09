@@ -9,8 +9,22 @@
 #' @param quads Numeric. For plots using residuals (i.e. resid, stand). How many quantiles should the data be broken into?
 #' @param return_data Logical. Should the plot data be returned. If TRUE returns a list with the plot and the data.
 #' @param pfa An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.
-#' @param  <-  An object from irt_item_fit(). If omitted, irt_item_fit() is called within the function with the default settings.
 #' @method plot wizirt
+#' @examples data("responses")
+#' my_model <- wizirt(data = responses[,-1])
+#' plot(my_model, type = 'tinfo')
+#' plot(my_model, type = 'theta')
+#' plot(my_model, type = 'diff')
+#' plot(my_model, type = 'theta_diff')
+#' plot(my_model, type = 'obs', items = 1:4)
+#' plot(my_model, type = 'trace', items = 1:4)
+#' plot(my_model, type = 'trace', items = 1:4, facets = FALSE)
+#' plot(my_model, type = 'resid', items = 1:4)
+#' plot(my_model, type = 'stand', items = 1:4)
+#' plot(my_model, type = 'info', items = 1:4)
+#' plot(my_model, type = 'resid_trace', items = 1:4)
+#' plot(my_model, type = 'np_prf', facets = T, persons = 1:4)
+#' plot(my_model, type = 'np_prf', facets = F)
 #' @export
 plot.wizirt <- function(wizirt_fit,
                      type = 'tinfo',
@@ -19,8 +33,7 @@ plot.wizirt <- function(wizirt_fit,
                      facets = TRUE,
                      quads = 10,
                      return_data = FALSE,
-                     pfa = NULL,
-                     ifa = NULL){
+                     pfa = NULL){
 
   plt_data <- list()
   plt <- NULL

@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wizirt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -162,11 +162,11 @@
     </tr>
     <tr>
       <th>item_type</th>
-      <td><p>Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.</p></td>
+      <td><p>Character. Must be one of "Rasch", "1PL", "2PL" or "3PL".</p></td>
     </tr>
     <tr>
       <th>engine</th>
-      <td><p>Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.</p></td>
+      <td><p>Character. Currently supported engines are "mirt" and "ltm" for Rasch, 1PL, 2PL, and 3PL models. "eRm" is supported for Rasch models only.</p></td>
     </tr>
     <tr>
       <th>tol</th>
@@ -174,7 +174,108 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>Returns a list of class wizirt.
+<em>spec</em> is a list of information for the parsnip backend. printing spec prints a summary of the model run.
+<em>elapsed</em> contains the time it took the model to run.
+<em>fit</em> contains the model information:</p><ul>
+<li><p><em>data</em> is the data passed to the model</p></li>
+<li><p><em>model</em> contains model fit information, including:</p></li>
+</ul>
+<ul>
+<li><p><em>engine</em> a list with values pkg (the package used for estimation), ver (pkg version), func (functiong used from pkg), and call (call made to pkg)</p></li>
+<li><p><em>n_factors</em> the number of factors estimated</p></li>
+<li><p><em>item_type</em> the item type passed to wizirt (Rasch, 1PL, 2PL, or 3PL).</p></li>
+</ul>
+<ul>
+<li><p><em>estimation</em> a list with information related to convergence. <em>convergence</em> a T/F value of whether the model converged, <em>method</em> the estimation method, <em>criteria</em> the convergence criteria, <em>iterations</em> the number of iterations it took for the model to converge, <em>log_lik</em> the loglikelihood at convergence, <em>abs_fit</em> the absolute fit of the model, <em>df</em> the number of parameters estimated.</p></li>
+<li><p><em>parameters</em> a list of estimated parameters. <em>coefficients</em> is a data frame of estimated item-statistics and <em>persons</em> is a data frame of estimated person statistics.</p></li>
+<li><p><em>original_object</em> is the object returned from the engine.</p></li>
+</ul>
+
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"responses"</span>)
+<span class='kw'>my_model</span> <span class='op'>&lt;-</span> <span class='fu'>wizirt</span>(data = <span class='kw'>responses</span>[,<span class='op'>-</span><span class='fl'>1</span>], item_type = <span class='st'>"2PL"</span>, tol = <span class='fl'>1e-4</span>, engine = <span class='st'>"mirt"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>my_model</span>, type = <span class='st'>"tech"</span>)
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 11 x 2</span><span>
+#&gt;    parameter      value                                                         
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                                         
+#&gt; </span><span style='color: #555555;'> 1</span><span> package        </span><span style='color: #555555;'>"</span><span>mirt</span><span style='color: #555555;'>"</span><span>                                                        
+#&gt; </span><span style='color: #555555;'> 2</span><span> function       </span><span style='color: #555555;'>"</span><span>mirt</span><span style='color: #555555;'>"</span><span>                                                        
+#&gt; </span><span style='color: #555555;'> 3</span><span> version        </span><span style='color: #555555;'>"</span><span>1.32.7</span><span style='color: #555555;'>"</span><span>                                                      
+#&gt; </span><span style='color: #555555;'> 4</span><span> call           </span><span style='color: #555555;'>"</span><span>mirt::mirt(data = data, model = 1, itemtype = \"2PL\", SE = ~
+#&gt; </span><span style='color: #555555;'> 5</span><span> factors        </span><span style='color: #555555;'>"</span><span>1</span><span style='color: #555555;'>"</span><span>                                                           
+#&gt; </span><span style='color: #555555;'> 6</span><span> item type      </span><span style='color: #555555;'>"</span><span>2PL</span><span style='color: #555555;'>"</span><span>                                                         
+#&gt; </span><span style='color: #555555;'> 7</span><span> converged      </span><span style='color: #555555;'>"</span><span>TRUE</span><span style='color: #555555;'>"</span><span>                                                        
+#&gt; </span><span style='color: #555555;'> 8</span><span> method         </span><span style='color: #555555;'>"</span><span>EM</span><span style='color: #555555;'>"</span><span>                                                          
+#&gt; </span><span style='color: #555555;'> 9</span><span> log-likelihood </span><span style='color: #555555;'>"</span><span>-1009.37643471027</span><span style='color: #555555;'>"</span><span>                                           
+#&gt; </span><span style='color: #555555;'>10</span><span> criteria       </span><span style='color: #555555;'>"</span><span>1e-05</span><span style='color: #555555;'>"</span><span>                                                       
+#&gt; </span><span style='color: #555555;'>11</span><span> iterations     </span><span style='color: #555555;'>"</span><span>76</span><span style='color: #555555;'>"</span><span>                                                          </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>my_model</span>, type = <span class='st'>"desc"</span>)
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 7 x 2</span><span>
+#&gt;   parameter         value
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>             </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> N Items           25   
+#&gt; </span><span style='color: #555555;'>2</span><span> Avg Difficulty    -</span><span style='color: #BB0000;'>0.06</span><span>
+#&gt; </span><span style='color: #555555;'>3</span><span> Avg Diff (CTT)     0.75
+#&gt; </span><span style='color: #555555;'>4</span><span> N Persons         75   
+#&gt; </span><span style='color: #555555;'>5</span><span> Avg Ability        0   
+#&gt; </span><span style='color: #555555;'>6</span><span> Avg % Correct     75   
+#&gt; </span><span style='color: #555555;'>7</span><span> Avg % Completion 100   </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>my_model</span>, type = <span class='st'>"item"</span>)
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 25 x 4</span><span>
+#&gt;    item  difficulty discrimination guessing
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> A         -</span><span style='color: #BB0000;'>0.606</span><span>         1.75          0
+#&gt; </span><span style='color: #555555;'> 2</span><span> B         -</span><span style='color: #BB0000;'>1.87</span><span>          0.580         0
+#&gt; </span><span style='color: #555555;'> 3</span><span> C         -</span><span style='color: #BB0000;'>2.26</span><span>          0.624         0
+#&gt; </span><span style='color: #555555;'> 4</span><span> D         -</span><span style='color: #BB0000;'>2.32</span><span>          0.363         0
+#&gt; </span><span style='color: #555555;'> 5</span><span> E         10.5          -</span><span style='color: #BB0000;'>0.090</span><span style='color: #BB0000;text-decoration: underline;'>4</span><span>        0
+#&gt; </span><span style='color: #555555;'> 6</span><span> F         -</span><span style='color: #BB0000;'>5.38</span><span>          0.177         0
+#&gt; </span><span style='color: #555555;'> 7</span><span> G         -</span><span style='color: #BB0000;'>1.71</span><span>          0.952         0
+#&gt; </span><span style='color: #555555;'> 8</span><span> H         -</span><span style='color: #BB0000;'>0.996</span><span>         1.22          0
+#&gt; </span><span style='color: #555555;'> 9</span><span> I         -</span><span style='color: #BB0000;'>2.63</span><span>          0.459         0
+#&gt; </span><span style='color: #555555;'>10</span><span> J         -</span><span style='color: #BB0000;'>2.70</span><span>          0.416         0
+#&gt; </span><span style='color: #555555;'># ... with 15 more rows</span><span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>my_model</span>, type = <span class='st'>"person"</span>)
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 75 x 3</span><span>
+#&gt;    ability std_err   ids
+#&gt;      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> -</span><span style='color: #BB0000;'>0.021</span><span style='color: #BB0000;text-decoration: underline;'>6</span><span>   0.533     1
+#&gt; </span><span style='color: #555555;'> 2</span><span>  0.662    0.640     2
+#&gt; </span><span style='color: #555555;'> 3</span><span> -</span><span style='color: #BB0000;'>0.201</span><span>    0.510     3
+#&gt; </span><span style='color: #555555;'> 4</span><span> -</span><span style='color: #BB0000;'>1.93</span><span>     0.556     4
+#&gt; </span><span style='color: #555555;'> 5</span><span> -</span><span style='color: #BB0000;'>0.735</span><span>    0.472     5
+#&gt; </span><span style='color: #555555;'> 6</span><span> -</span><span style='color: #BB0000;'>0.503</span><span>    0.482     6
+#&gt; </span><span style='color: #555555;'> 7</span><span>  0.874    0.674     7
+#&gt; </span><span style='color: #555555;'> 8</span><span> -</span><span style='color: #BB0000;'>0.746</span><span>    0.472     8
+#&gt; </span><span style='color: #555555;'> 9</span><span> -</span><span style='color: #BB0000;'>0.172</span><span>    0.514     9
+#&gt; </span><span style='color: #555555;'>10</span><span> -</span><span style='color: #BB0000;'>1.05</span><span>     0.476    10
+#&gt; </span><span style='color: #555555;'># ... with 65 more rows</span><span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>my_model</span>, type = <span class='st'>"na_item"</span>)
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 25 x 3</span><span>
+#&gt;    item  count  prop
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> A         0     0
+#&gt; </span><span style='color: #555555;'> 2</span><span> B         0     0
+#&gt; </span><span style='color: #555555;'> 3</span><span> C         0     0
+#&gt; </span><span style='color: #555555;'> 4</span><span> D         0     0
+#&gt; </span><span style='color: #555555;'> 5</span><span> E         0     0
+#&gt; </span><span style='color: #555555;'> 6</span><span> F         0     0
+#&gt; </span><span style='color: #555555;'> 7</span><span> G         0     0
+#&gt; </span><span style='color: #555555;'> 8</span><span> H         0     0
+#&gt; </span><span style='color: #555555;'> 9</span><span> I         0     0
+#&gt; </span><span style='color: #555555;'>10</span><span> J         0     0
+#&gt; </span><span style='color: #555555;'># ... with 15 more rows</span><span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/anova.html'>anova</a></span>(<span class='kw'>my_model</span>)
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 8 x 2</span><span>
+#&gt;   stat    values
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> log_lik -</span><span style='color: #BB0000;text-decoration: underline;'>1</span><span style='color: #BB0000;'>009.</span><span>
+#&gt; </span><span style='color: #555555;'>2</span><span> N          75 
+#&gt; </span><span style='color: #555555;'>3</span><span> n_pars     50 
+#&gt; </span><span style='color: #555555;'>4</span><span> AIC      </span><span style='text-decoration: underline;'>2</span><span>119.
+#&gt; </span><span style='color: #555555;'>5</span><span> AICc     </span><span style='text-decoration: underline;'>2</span><span>331.
+#&gt; </span><span style='color: #555555;'>6</span><span> BIC      </span><span style='text-decoration: underline;'>2</span><span>235.
+#&gt; </span><span style='color: #555555;'>7</span><span> SABIC    </span><span style='text-decoration: underline;'>2</span><span>077.
+#&gt; </span><span style='color: #555555;'>8</span><span> HQ       </span><span style='text-decoration: underline;'>2</span><span>165.</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

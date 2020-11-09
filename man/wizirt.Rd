@@ -17,12 +17,42 @@ wizirt(
 
 \item{rownames}{Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).}
 
-\item{item_type}{Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.}
+\item{item_type}{Character. Must be one of "Rasch", "1PL", "2PL" or "3PL".}
 
-\item{engine}{Character. Currently supported engines are 'mirt' and 'ltm' for Rasch, 1PL, 2PL, and 3PL models. 'eRm' is supported for Rasch models only.}
+\item{engine}{Character. Currently supported engines are "mirt" and "ltm" for Rasch, 1PL, 2PL, and 3PL models. "eRm" is supported for Rasch models only.}
 
 \item{tol}{Numeric. Convergence criterion. Currently only implemented when engine is mirt.}
 }
+\value{
+Returns a list of class wizirt.
+\emph{spec} is a list of information for the parsnip backend. printing spec prints a summary of the model run.
+\emph{elapsed} contains the time it took the model to run.
+\emph{fit} contains the model information:
+\itemize{
+\item \emph{data} is the data passed to the model
+\item \emph{model} contains model fit information, including:
+}
+\itemize{
+\item \emph{engine} a list with values pkg (the package used for estimation), ver (pkg version), func (functiong used from pkg), and call (call made to pkg)
+\item \emph{n_factors} the number of factors estimated
+\item \emph{item_type} the item type passed to wizirt (Rasch, 1PL, 2PL, or 3PL).
+}
+\itemize{
+\item \emph{estimation} a list with information related to convergence. \emph{convergence} a T/F value of whether the model converged, \emph{method} the estimation method, \emph{criteria} the convergence criteria, \emph{iterations} the number of iterations it took for the model to converge, \emph{log_lik} the loglikelihood at convergence, \emph{abs_fit} the absolute fit of the model, \emph{df} the number of parameters estimated.
+\item \emph{parameters} a list of estimated parameters. \emph{coefficients} is a data frame of estimated item-statistics and \emph{persons} is a data frame of estimated person statistics.
+\item \emph{original_object} is the object returned from the engine.
+}
+}
 \description{
 Estimate an IRT model using various engines
+}
+\examples{
+data("responses")
+my_model <- wizirt(data = responses[,-1], item_type = "2PL", tol = 1e-4, engine = "mirt")
+print(my_model, type = "tech")
+print(my_model, type = "desc")
+print(my_model, type = "item")
+print(my_model, type = "person")
+print(my_model, type = "na_item")
+anova(my_model)
 }

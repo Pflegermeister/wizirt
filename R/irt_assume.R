@@ -7,6 +7,13 @@
 #' @param wizirt_fit An object from fit_wizirt
 #' @param verbose Logical. Should the names of the other packages used in this function be printed? Default is FALSE.
 #' @return A list with tibbles of data in them.
+#' @examples data("responses")
+#' my_model <- wizirt(data = responses[,-1])
+#' assumptions <- irt_assume(my_model)
+#' print(assumptions, type = 'rel')
+#' print(assumptions, type = 'abs')
+#' print(assumptions, type = 'unid')
+#' print(assumptions, type = 'ld')
 #' @export
 irt_assume <- function (wizirt_fit, verbose = FALSE) {
   if (verbose) {

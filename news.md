@@ -1,3 +1,16 @@
+wizirt 0.1.2
+============
+
+Major Changes
+-------------
+
+The wizirt package has now been released. It is pretty new. Let me know
+if there are any issues!
+
+As of right now, it is known that the degrees of freedom used in the
+anova() function when mirt is the engine are 1 larger than when mirt
+itself is used.
+
 wizirt 0.0.0.0
 ==============
 

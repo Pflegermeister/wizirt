@@ -7,14 +7,23 @@
 irt(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e-05)
 }
 \arguments{
-\item{mode}{Must be 'regression' currently.}
+\item{mode}{Must be "regression" currently.}
 
-\item{item_type}{Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.}
+\item{item_type}{Character. Must be one of "Rasch", "1PL", "2PL" or "3PL".}
 
 \item{rownames}{Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).}
 
 \item{tol}{Numeric. Convergence criterion. Currently only implemented when engine is mirt.}
 }
+\value{
+An object to be passed to fit_wizirt()
+}
 \description{
 irt() is used to describe a model, it must be used in conjunction with set_engine(), and fit_wizirt().
+}
+\examples{
+data("responses")
+my_model <- irt(item_type = "Rasch") \%>\%
+  set_engine(engine = "mirt") \%>\%
+  fit_wizirt(data = responses[,-1])
 }

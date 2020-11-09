@@ -2,7 +2,7 @@
 title: "wizirt Overview"
 author: "Isaac Pfleger"
 date: "11/3/2020"
-output: html_document
+output: word_document
 ---
 
 This is a vignette walking through all that wizirt is capable of doing. This vignette is not intended to be read through from beginning to end, so much as it is intended to serve as a reference. wizirt can be installed from GitHub. I prefer to skip updates when installing from GitHub, I find it often leads to an error.
@@ -114,17 +114,19 @@ Perhaps there are many items in the data set, and the plots come out squished. U
 plot(mod2, type = "trace", facets = FALSE, items = 1:5)
 ```
 
-Combining with other code, we can subset the items based on some characteristic. For example, maybe we only want to plot the items with a negative slope. The which function is used to give us the position of the TRUE values in a vector of logical T/F values. We use this to get the positions of the items that that have discriminations less than 0. 
+Combining with other code, we can subset the items based on some characteristic. For example, we may wish to select items that are part of a subset.
 
 ```{r}
-selection <- which(mod2$fit$parameters$coefficients$discrimination < 0)
+selection <- which(names(mod2$fit$data) %in% c("A", 'E', "I", "O", "U"))
 plot(mod2, type = "trace", facets = FALSE, items = selection)
 ```
 
 This process of selecting items applies to all plots, including the ones for the test information generally.
 
 ```{r}
-plot(mod2, type = "tinfo", items = selection)
+plot(mod2, type = "tinfo", items = selection) + 
+  ggplot2::labs(title = "Summed Information Function from Selected Items") + 
+  ggplot2::ylim(c(0, .25))
 ```
 
 While the plots focus on information from the estimated model, it is also possible to gather statistics related to item-level fit. This is done using the irt_item_fit() function, which includes the argument stats. The stats argument refers to item-level fit statistics. These are calculated using mirt::itemfit(). Options available include ‘Zh’, ‘X2’, ‘G2’, or ‘infit’. Note that this is note a complete selection of what is available in mirt. Other item fit statistics will become availalbe at a future date. More information on the calculation of these measures is available in the documentation for mirt::itemfit(). 

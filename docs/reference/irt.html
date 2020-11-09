@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wizirt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -148,11 +148,11 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mode</th>
-      <td><p>Must be 'regression' currently.</p></td>
+      <td><p>Must be "regression" currently.</p></td>
     </tr>
     <tr>
       <th>item_type</th>
-      <td><p>Character. Must be one of 'Rasch', '1PL', '2PL' or '3PL'.</p></td>
+      <td><p>Character. Must be one of "Rasch", "1PL", "2PL" or "3PL".</p></td>
     </tr>
     <tr>
       <th>rownames</th>
@@ -164,7 +164,16 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>An object to be passed to fit_wizirt()</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"responses"</span>)
+<span class='kw'>my_model</span> <span class='op'>&lt;-</span> <span class='fu'>irt</span>(item_type = <span class='st'>"Rasch"</span>) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(engine = <span class='st'>"mirt"</span>) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='fit_wizirt.html'>fit_wizirt</a></span>(data = <span class='kw'>responses</span>[,<span class='op'>-</span><span class='fl'>1</span>])
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
