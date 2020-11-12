@@ -8,7 +8,8 @@
 #' @param facets Logical. Should the plots be faceted? Default is TRUE.
 #' @param quads Numeric. For plots using residuals (i.e. resid, stand). How many quantiles should the data be broken into?
 #' @param return_data Logical. Should the plot data be returned. If TRUE returns a list with the plot and the data.
-#' @param pfa An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.
+#' @param pfa An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings (only for np_prf)
+#' @param ifa An object from irt_item_fit(). If omitted, irt_item_fit() is called within the function with the default settings (only for tinfo)
 #' @method plot wizirt
 #' @examples data("responses")
 #' my_model <- wizirt(data = responses[,-1])
@@ -33,7 +34,8 @@ plot.wizirt <- function(wizirt_fit,
                      facets = TRUE,
                      quads = 10,
                      return_data = FALSE,
-                     pfa = NULL){
+                     pfa = NULL,
+                     ifa = NULL){
 
   plt_data <- list()
   plt <- NULL
