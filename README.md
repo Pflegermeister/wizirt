@@ -12,3 +12,6 @@ machine.
 
     data("responses")
     irt_report(data = responses[,-1])
+
+You can see an example of how the output should look
+[here](https://isaacpfleger.com/resources/dissertation/example_report.html).
