@@ -15,3 +15,6 @@ machine.
 
 You can see an example of how the output should look
 [here](https://isaacpfleger.com/resources/dissertation/example_report.html).
+
+You can more detailed instructions on using wizirt
+[here](https://pflegermeister.github.io/wizirt/).
