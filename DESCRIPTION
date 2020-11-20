@@ -20,11 +20,11 @@ Imports:
     rlang,
     magrittr,
     glue,
-    shiny,
     DT,
     reactable,
     rmdformats,
-    stringr
+    stringr,
+    flextable
 RoxygenNote: 7.1.1
 Depends: 
     R (>= 2.10),

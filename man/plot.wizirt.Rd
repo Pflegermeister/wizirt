@@ -12,7 +12,8 @@
   facets = TRUE,
   quads = 10,
   return_data = FALSE,
-  pfa = NULL
+  pfa = NULL,
+  ifa = NULL
 )
 }
 \arguments{
@@ -28,7 +29,9 @@
 
 \item{return_data}{Logical. Should the plot data be returned. If TRUE returns a list with the plot and the data.}
 
-\item{pfa}{An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings.}
+\item{pfa}{An object from irt_person_fit(). If omitted, irt_person_fit() is called within the function with the default settings (only for np_prf)}
+
+\item{ifa}{An object from irt_item_fit(). If omitted, irt_item_fit() is called within the function with the default settings (only for tinfo)}
 }
 \description{
 All plots in wizirt use ggplot2 as a backend. Type 'theta_diff' also uses gghalves. For the item-focused plots, the types can be included in the same string to overlay the plots (e.g. resid_trace).
