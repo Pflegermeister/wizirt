@@ -8,7 +8,7 @@ output: word_document
 This is a vignette walking through all that wizirt is capable of doing. This vignette is not intended to be read through from beginning to end, so much as it is intended to serve as a reference. wizirt can be installed from GitHub. I prefer to skip updates when installing from GitHub, I find it often leads to an error.
 
 ```{r, eval = FALSE}
-devtools::install_github('Pflegermeister/wizirt')
+devtools::install_github("Pflegermeister/wizirt")
 ```
 
 After installing wizirt, you need to load it to use it. 
@@ -30,7 +30,12 @@ data("responses")
 wizirt includes a very useful function that runs almost all of the other functions found in wizirt. This is irt_report(). It can be used to create a general report based on the data given to it. The irt_report() function has many arguments that are based on the functions in wizirt (since irt_report() combines them). These arguments include the data, report_type (only html is available right now), title, author, note, engine, and rownames. Other arguments can be found in the documentation (?irt_report).
 
 ```{r, eval = FALSE}
-irt_report(data = responses[,-1], rownames = responses[,1], title = "My Title", author = "Myself, I.", note = "A note", item_type = "Rasch")
+irt_report(data = responses[, -1],
+           rownames = responses[, 1],
+           title = "My Title",
+           author = "Myself, I.",
+           note = "A note",
+           item_type = "Rasch")
 ```
 
 Notice that the responses are included in the data argument and the examinee ids are included in the rownames argument. An example of the output from this report is available online at [https://isaacpfleger.com/resources/dissertation/example_report.html](https://isaacpfleger.com/resources/dissertation/example_report.html).
@@ -38,24 +43,27 @@ Notice that the responses are included in the data argument and the examinee ids
 The irt_report() function is designed for convenience and to gradually break in the new R user. For those who are more familiar with R, there are a series of functions that provide greater access to the capabilities of wizirt. The simplest wizirt model can be specified simply by passing data to the function wizirt.
 
 ```{r}
-mod <- wizirt(data = responses[,-1])
+mod <- wizirt(data = responses[, -1])
 ```
 
 By default the wizirt function runs a Rasch model using the mirt package. However, you can change the model with the item_type argument. Rasch, 1PL, 2PL, and 3PL are available for item_type. Likewise, the package doing the estimation can be changed with the engine argument. Possible engines include mirt, ltm, and eRm. 
 
 ```{r}
-mod2 <- wizirt(data = responses[,-1], rownames = data[,1], item_type = "2PL", engine = "mirt")
+mod2 <- wizirt(data = responses[, -1],
+               rownames = data[, 1],
+               item_type = "2PL",
+               engine = "mirt")
 ```
 
-To access the information inside of wizirt, use the print method with the type argument. Options for printing include descriptive statistics ('desc'), technical information ('tech'), missing data information from the perspective of the items ('na_items'), missing data from the perspective of the persons ('na_persons'), and the estimates for person and item parameters ('person' and 'item' respectively). For space reasons, I won't show each of these here, but this is an example of how to use the print function with the type argument.
+To access the information inside of wizirt, use the print method with the type argument. Options for printing include descriptive statistics ("desc"), technical information ("tech"), missing data information from the perspective of the items ("na_items"), missing data from the perspective of the persons ("na_persons"), and the estimates for person and item parameters ("person" and "item" respectively). For space reasons, I won't show each of these here, but this is an example of how to use the print function with the type argument.
 
 ```{r}
-print(mod, type = 'tech') %>% reactable()
+print(mod, type = "tech") %>% reactable()
 ```
 
-To get the other information, switch 'tech' with any of the other options ('desc', 'na_items', 'na_persons', 'item', 'person'). After estimating two models like we have done here, it is possible to compare them using the anova() function, though I would make sure that the engines are the same before comparing. They use different methods for optimization, so the log-likelihoods may not be comparable. 
+To get the other information, switch "tech" with any of the other options ("desc", "na_items", "na_persons", "item", "person"). After estimating two models like we have done here, it is possible to compare them using the anova() function, though I would make sure that the engines are the same before comparing. They use different methods for optimization, so the log-likelihoods may not be comparable. 
 
-```{r, results = 'asis'}
+```{r, results = "asis"}
 anova(mod2, mod) %>% reactable()
 ```
 
@@ -72,7 +80,7 @@ The information needed to address the assumptions of unidimensional IRT is extra
 Essential unidimensionality is checked using the sirt function conf.detect. The evaluations based on the cutoffs are included in the output, but more technical information is available in the help documentation for sirt::conf.detect(). 
 
 ```{r}
-print(assumptions, type = 'unid') %>% reactable()
+print(assumptions, type = "unid") %>% reactable()
 ```
 
 Local dependence uses a combination of the standardized LD statistic as calculated by mirt::residuals-method(). The p-value is also included. The correlations (ccov) are from the ltm package with its ltm::rcor.test() function. The statistics are calculated for each pair of items, and the pairs are arranged by decreasing values of the standardized LD. There is a plot method for assessing local dependence as well. I will forgo the print method and only show the plot method for the purposes of space. 
@@ -117,19 +125,19 @@ plot(mod2, type = "trace", facets = FALSE, items = 1:5)
 Combining with other code, we can subset the items based on some characteristic. For example, we may wish to select items that are part of a subset.
 
 ```{r}
-selection <- which(names(mod2$fit$data) %in% c("A", 'E', "I", "O", "U"))
+selection <- which(names(mod2$fit$data) %in% c("A", "E", "I", "O", "U"))
 plot(mod2, type = "trace", facets = FALSE, items = selection)
 ```
 
 This process of selecting items applies to all plots, including the ones for the test information generally.
 
 ```{r}
-plot(mod2, type = "tinfo", items = selection) + 
-  ggplot2::labs(title = "Summed Information Function from Selected Items") + 
+plot(mod2, type = "tinfo", items = selection) +
+  ggplot2::labs(title = "Summed Information Function from Selected Items") +
   ggplot2::ylim(c(0, .25))
 ```
 
-While the plots focus on information from the estimated model, it is also possible to gather statistics related to item-level fit. This is done using the irt_item_fit() function, which includes the argument stats. The stats argument refers to item-level fit statistics. These are calculated using mirt::itemfit(). Options available include ‘Zh’, ‘X2’, ‘G2’, or ‘infit’. Note that this is note a complete selection of what is available in mirt. Other item fit statistics will become availalbe at a future date. More information on the calculation of these measures is available in the documentation for mirt::itemfit(). 
+While the plots focus on information from the estimated model, it is also possible to gather statistics related to item-level fit. This is done using the irt_item_fit() function, which includes the argument stats. The stats argument refers to item-level fit statistics. These are calculated using mirt::itemfit(). Options available include "Zh", "X2", "G2", or "infit". Note that this is note a complete selection of what is available in mirt. Other item fit statistics will become availalbe at a future date. More information on the calculation of these measures is available in the documentation for mirt::itemfit(). 
 
 ```{r}
 ifa <- irt_item_fit(mod, stats = "Zh")
@@ -138,16 +146,16 @@ print(ifa) %>% reactable()
 
 # Person-level Statistics
 
-Working with person-level statistics is very similar to working with item-level statistics. For example, there is an irt_person_fit() function that provides a number of person-fit statistics. These are obtained from the PerFit package. Options for the stats argument in irt_person_fit() are ‘lz’, 'lzstar’, 'NCI’, 'E.KB’, 'D.KB’, 'A.KB’, 'Ht’, 'ZU3’, 'U3’, 'Cstar’, 'C.Sato', or 'G’. The default is 'Ht'. Cutoffs are created from PerFit::cutoff(). Users are directed to the documentation of PerFit for further information regarding these statistics or the way cutoffs are created. 
+Working with person-level statistics is very similar to working with item-level statistics. For example, there is an irt_person_fit() function that provides a number of person-fit statistics. These are obtained from the PerFit package. Options for the stats argument in irt_person_fit() are "lz", "lzstar", "NCI", "E.KB", "D.KB", "A.KB", "Ht", "ZU3", "U3", "Cstar", "C.Sato", or "G". The default is "Ht". Cutoffs are created from PerFit::cutoff(). Users are directed to the documentation of PerFit for further information regarding these statistics or the way cutoffs are created. 
 
 Additional statistics are available for Rasch models from sirt::personfit.stat(), though cutoffs are not created for these. These extra stats are "caution", "depend", "ECI1", "ECI2", "ECI3", "ECI4", "ECI5", "ECI6", "l0", "infit", "rpbis", and "rpbis.itemdiff". The stat option "infit" will calculate both infit and outfit.
 
 ```{r}
-pfa <- irt_person_fit(mod2, stats = "Ht") 
+pfa <- irt_person_fit(mod2, stats = "Ht")
 ```
 
 
-There is less available to person statistics in terms of plots. Right now, the only plot is the nonparametric persons response function, which is produced by setting the type argument to 'np_prf' in the plot function. Because there are frequently too many persons to be included in a single plot and to still have it be visible, a plot_wrap function is included that works with item and person plots. 
+There is less available to person statistics in terms of plots. Right now, the only plot is the nonparametric persons response function, which is produced by setting the type argument to "np_prf" in the plot function. Because there are frequently too many persons to be included in a single plot and to still have it be visible, a plot_wrap function is included that works with item and person plots. 
 
 ```{r, warning = FALSE}
 plot_wrap(mod2, type = "np_prf", persons_per = 25, pfa = pfa)
@@ -177,7 +185,7 @@ print(pfa, patterns = T, item_order = "by_diff") %>% reactable()
 Alternatively, item_order can be a character or numeric vector of item names or positions. This can be less than the total number of items for a subset pattern.
 
 ```{r}
-print(pfa, patterns = T, item_order = 1:5)%>% reactable()
+print(pfa, patterns = T, item_order = 1:5) %>% reactable()
 ```
 
 Modeling reasons for person-fit can also be done using the irt_model_pfa() function. This uses the Conijn et al (xxxx) multi-level method. The data are randomly divided into a certain number of bins (specified by the bins argument). Then person fit statistics are calculated on each of the bins, and a multilevel model is run. Here a list or data frame of predictors can be included. This data does not have any predictors, so I make a fake one to show how it works. 

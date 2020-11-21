@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wizirt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -141,7 +141,13 @@
     <p>irt() is used to describe a model, it must be used in conjunction with set_engine(), and fit_wizirt().</p>
     </div>
 
-    <pre class="usage"><span class='fu'>irt</span>(mode = <span class='st'>"regression"</span>, item_type = <span class='kw'>NULL</span>, rownames = <span class='kw'>NULL</span>, tol = <span class='fl'>1e-05</span>)</pre>
+    <pre class="usage"><span class='fu'>irt</span>(
+  mode = <span class='st'>"regression"</span>,
+  item_type = <span class='kw'>NULL</span>,
+  rownames = <span class='kw'>NULL</span>,
+  tol = <span class='fl'>1e-05</span>,
+  abs_fit = <span class='kw'>T</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,6 +168,10 @@
       <th>tol</th>
       <td><p>Numeric. Convergence criterion. Currently only implemented when engine is mirt.</p></td>
     </tr>
+    <tr>
+      <th>abs_fit</th>
+      <td><p>Logical. Should absolute fit statistics be calculated? Increases time for estimation. Currently supported engine is "mirt".</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -172,7 +182,7 @@
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"responses"</span>)
 <span class='kw'>my_model</span> <span class='op'>&lt;-</span> <span class='fu'>irt</span>(item_type = <span class='st'>"Rasch"</span>) <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(engine = <span class='st'>"mirt"</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='fit_wizirt.html'>fit_wizirt</a></span>(data = <span class='kw'>responses</span>[,<span class='op'>-</span><span class='fl'>1</span>])
+  <span class='fu'><a href='fit_wizirt.html'>fit_wizirt</a></span>(data = <span class='kw'>responses</span>[, <span class='op'>-</span><span class='fl'>1</span>])
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

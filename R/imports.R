@@ -19,8 +19,7 @@ parsnip::set_engine
 parsnip::set_mode
 
 
-.onLoad <- function(libname, pkgname){
-  a <- capture.output(tryCatch(make_irt(), error = function (e){}))
+.onLoad <- function(libname, pkgname) {
+  a <- capture.output(tryCatch(make_irt(), error = function(e) {}))
   rm(a)
 }
-

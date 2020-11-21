@@ -23,10 +23,10 @@ See the documentation on those functions for more information on calculation.
 }
 \examples{
 data("responses")
-my_model <- wizirt(data = responses[,-1])
+my_model <- wizirt(data = responses[, -1])
 assumptions <- irt_assume(my_model)
-print(assumptions, type = 'rel')
-print(assumptions, type = 'abs')
-print(assumptions, type = 'unid')
-print(assumptions, type = 'ld')
+print(assumptions, type = "rel")
+print(assumptions, type = "abs")
+print(assumptions, type = "unid")
+print(assumptions, type = "ld")
 }

@@ -5,7 +5,7 @@
 #' @param engine Character. Currently supported engines are "mirt" and "ltm" for Rasch, 1PL, 2PL, and 3PL models. "eRm" is supported for Rasch models only.
 #' @inheritParams fit_wizirt
 #' @return Returns a list of class wizirt.
-#' *spec* is a list of information for the parsnip backend. printing spec prints a summary of the model run.
+#' *spec* is a list of information for the parsnip backend. Printing spec prints a summary of the model run.
 #' *elapsed* contains the time it took the model to run.
 #' *fit* contains the model information:
 #' * *data* is the data passed to the model
@@ -19,7 +19,7 @@
 #' @md
 #' @examples
 #' data("responses")
-#' my_model <- wizirt(data = responses[,-1], item_type = "2PL", tol = 1e-4, engine = "mirt")
+#' my_model <- wizirt(data = responses[, -1], item_type = "2PL", tol = 1e-4, engine = "mirt")
 #' print(my_model, type = "tech")
 #' print(my_model, type = "desc")
 #' print(my_model, type = "item")
@@ -27,9 +27,9 @@
 #' print(my_model, type = "na_item")
 #' anova(my_model)
 #' @export
-wizirt <- function(data, rownames = NULL, item_type = "Rasch", engine = "mirt", tol = 1e-05){
-  irt_pars = TRUE # irt_pars cannot equal false yet
-  irt(item_type = item_type) %>%
+wizirt <- function(data, rownames = NULL, item_type = "Rasch", engine = "mirt", tol = 1e-05, abs_fit = T) {
+  irt_pars <- TRUE # irt_pars cannot equal false yet
+  irt(item_type = item_type, abs_fit = abs_fit, tol = tol) %>%
     set_engine(engine = engine) %>%
     fit_wizirt(data = data)
 }
@@ -41,24 +41,30 @@ wizirt <- function(data, rownames = NULL, item_type = "Rasch", engine = "mirt", 
 #' @param item_type Character. Must be one of "Rasch", "1PL", "2PL" or "3PL".
 #' @param rownames Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).
 #' @param tol Numeric. Convergence criterion. Currently only implemented when engine is mirt.
+#' @param abs_fit Logical. Should absolute fit statistics be calculated? Increases time for estimation. Currently supported engine is "mirt".
 #' @return An object to be passed to fit_wizirt()
 #' @examples
 #' data("responses")
 #' my_model <- irt(item_type = "Rasch") %>%
 #'   set_engine(engine = "mirt") %>%
-#'   fit_wizirt(data = responses[,-1])
+#'   fit_wizirt(data = responses[, -1])
 #' @export
-irt <- function(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e-5){
-  irt_pars = TRUE # irt_pars cannot equal false yet
-  args <- list(item_type = rlang::enquo(item_type),
-               irt_pars = rlang::enquo(irt_pars),
-               rownames = rlang::enquo(rownames),
-               tol = rlang::enquo(tol))
-  out <- list(args = args,
-              eng_args = NULL,
-              mode = mode,
-              method = NULL,
-              engine = NULL)
+irt <- function(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e-5, abs_fit = T) {
+  irt_pars <- TRUE # irt_pars cannot equal false yet
+  args <- list(
+    item_type = rlang::enquo(item_type),
+    irt_pars = rlang::enquo(irt_pars),
+    rownames = rlang::enquo(rownames),
+    tol = rlang::enquo(tol),
+    abs_fit = rlang::enquo(abs_fit)
+  )
+  out <- list(
+    args = args,
+    eng_args = NULL,
+    mode = mode,
+    method = NULL,
+    engine = NULL
+  )
   class(out) <- parsnip::make_classes("irt")
   out
 }
@@ -85,15 +91,14 @@ irt <- function(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e
 #' data("responses")
 #' my_model <- irt(item_type = "Rasch") %>%
 #'   set_engine(engine = "mirt") %>%
-#'   fit_wizirt(data = responses[,-1])
+#'   fit_wizirt(data = responses[, -1])
 #' @export
-fit_wizirt <- #fit_wizirt.model_spec How do I get the fit_wizirt without the ".model_spec"?
+fit_wizirt <- # fit_wizirt.model_spec How do I get the fit_wizirt without the ".model_spec"?
   function(object,
            data,
            control = parsnip:::control_parsnip(), # formula %>%  will be theta ~ items + covariates and # will remove items not wanted.
-           ...
-  ) {
-    #object <- check_mode(object, levels(y)) # I want to retain this to limit changes, however I am not sure where this fits in.
+           ...) {
+    # object <- check_mode(object, levels(y)) # I want to retain this to limit changes, however I am not sure where this fits in.
     dots <- rlang::quos(...)
     if (is.null(object$engine)) {
       eng_vals <- parsnip:::possible_engines(object)
@@ -106,7 +111,7 @@ fit_wizirt <- #fit_wizirt.model_spec How do I get the fit_wizirt without the ".m
     cl <- match.call(expand.dots = TRUE)
     eval_env <- rlang::env()
     eval_env$responses <- data
-    fit_interface <- check_wizirt_interface(eval_env$responses, cl) #xxxx check 9/24/2020 dependencies
+    fit_interface <- check_wizirt_interface(eval_env$responses, cl) # xxxx check 9/24/2020 dependencies
 
     # populate `method` with the details for this model type
     object <- parsnip:::add_methods(object, engine = object$engine)
@@ -123,13 +128,13 @@ fit_wizirt <- #fit_wizirt.model_spec How do I get the fit_wizirt without the ".m
 
     res <- # Ok so this will have to set it to wizirt_form
 
-      wizirt_form( # xxxx check 9/24/2020 for dependencies
+      wizirt_form(
         object = object,
         env = eval_env,
         control = control,
         ...
       )
-    #rlang::abort(glue::glue("{interfaces} is unknown."))
+    # rlang::abort(glue::glue("{interfaces} is unknown."))
 
     model_classes <- class(res$fit)
     class(res) <- c("wizirt", "model_fit", model_classes[1])
@@ -138,13 +143,12 @@ fit_wizirt <- #fit_wizirt.model_spec How do I get the fit_wizirt without the ".m
 
 wizirt_form <-
   function(object, control, env, ...) {
-
     if (object$mode == "classification") {
       rlang::abort("Classification models not currently supported by wizirt.")
     }
 
     # evaluate quoted args once here to check them
-    #object <- check_args(object) # had to drop for the time being
+    # object <- check_args(object) # had to drop for the time being
 
     # sub in arguments to actual syntax for corresponding engine
     object <- parsnip:::translate(object, engine = object$engine)
@@ -152,7 +156,7 @@ wizirt_form <-
     fit_call <- make_wizirt_call(object, env = env)
 
     res <- list(
-      #lvl = y_levels,
+      # lvl = y_levels,
       spec = object
     )
 
@@ -181,11 +185,11 @@ make_wizirt_call <- function(object, env = NULL) {
 
   # add data arguments
   for (i in seq_along(data_args)) {
-    fit_args[[ unname(data_args[i]) ]] <- rlang::sym(names(data_args)[i])
+    fit_args[[unname(data_args[i])]] <- rlang::sym(names(data_args)[i])
   }
 
   # sub in actual formula
-  fit_args[[ unname(data_args["formula"]) ]]  <- env$formula
+  fit_args[[unname(data_args["formula"])]] <- env$formula
 
 
   fit_call <- parsnip:::make_call(
@@ -204,15 +208,17 @@ check_wizirt_interface <- function(data, cl, model) {
   matrix_interface <- !is.null(data) && is.matrix(data)
   df_interface <- !is.null(data) && is.data.frame(data)
 
-  if (matrix_interface)
+  if (matrix_interface) {
     return("data.frame")
-  if (df_interface)
+  }
+  if (df_interface) {
     return("data.frame")
+  }
   rlang::abort("Error when checking the interface")
 }
 
 
-make_irt <- function(){
+make_irt <- function() {
   parsnip::set_new_model("irt")
 
   # regression will essentially mean, IRT, classification will mean LCA. That will be implemented eventually.
@@ -239,17 +245,34 @@ make_irt <- function(){
     has_submodel = FALSE
   )
 
-  irt <- function(mode = "regression", item_type = NULL){
-    args <- list(item_type = rlang::enquo(item_type))
-    out <- list(args = args,
-                eng_args = NULL,
-                mode = mode,
-                method = NULL,
-                engine = NULL)
+  parsnip::set_model_arg(
+    model = "irt",
+    eng = "mirt",
+    parsnip = "abs_fit",
+    original = "abs_fit",
+    func = list(fun = "abs_fit"),
+    has_submodel = FALSE
+  )
+
+  irt <- function(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e-5, abs_fit = T) {
+    irt_pars <- TRUE # irt_pars cannot equal false yet
+    args <- list(
+      item_type = rlang::enquo(item_type),
+      irt_pars = rlang::enquo(irt_pars),
+      rownames = rlang::enquo(rownames),
+      tol = rlang::enquo(tol),
+      abs_fit = rlang::enquo(abs_fit)
+    )
+    out <- list(
+      args = args,
+      eng_args = NULL,
+      mode = mode,
+      method = NULL,
+      engine = NULL
+    )
     class(out) <- parsnip::make_classes("irt")
     out
   }
-
   parsnip::set_fit(
     model = "irt",
     eng = "mirt",
@@ -327,6 +350,4 @@ make_irt <- function(){
       defaults = list()
     )
   )
-
 }
-

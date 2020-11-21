@@ -38,5 +38,5 @@ fit_wizirt() runs a model that has been built with irt() and set_engine().
 data("responses")
 my_model <- irt(item_type = "Rasch") \%>\%
   set_engine(engine = "mirt") \%>\%
-  fit_wizirt(data = responses[,-1])
+  fit_wizirt(data = responses[, -1])
 }

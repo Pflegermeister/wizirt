@@ -4,7 +4,13 @@
 \alias{irt}
 \title{Describe the model you will run}
 \usage{
-irt(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e-05)
+irt(
+  mode = "regression",
+  item_type = NULL,
+  rownames = NULL,
+  tol = 1e-05,
+  abs_fit = T
+)
 }
 \arguments{
 \item{mode}{Must be "regression" currently.}
@@ -14,6 +20,8 @@ irt(mode = "regression", item_type = NULL, rownames = NULL, tol = 1e-05)
 \item{rownames}{Optional unique row IDs for the data (i.e. examinee IDs). If omitted, uses 1:nrow(data).}
 
 \item{tol}{Numeric. Convergence criterion. Currently only implemented when engine is mirt.}
+
+\item{abs_fit}{Logical. Should absolute fit statistics be calculated? Increases time for estimation. Currently supported engine is "mirt".}
 }
 \value{
 An object to be passed to fit_wizirt()
@@ -25,5 +33,5 @@ irt() is used to describe a model, it must be used in conjunction with set_engin
 data("responses")
 my_model <- irt(item_type = "Rasch") \%>\%
   set_engine(engine = "mirt") \%>\%
-  fit_wizirt(data = responses[,-1])
+  fit_wizirt(data = responses[, -1])
 }

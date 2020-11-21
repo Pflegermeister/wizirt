@@ -9,7 +9,8 @@ wizirt(
   rownames = NULL,
   item_type = "Rasch",
   engine = "mirt",
-  tol = 1e-05
+  tol = 1e-05,
+  abs_fit = T
 )
 }
 \arguments{
@@ -22,10 +23,12 @@ wizirt(
 \item{engine}{Character. Currently supported engines are "mirt" and "ltm" for Rasch, 1PL, 2PL, and 3PL models. "eRm" is supported for Rasch models only.}
 
 \item{tol}{Numeric. Convergence criterion. Currently only implemented when engine is mirt.}
+
+\item{abs_fit}{Logical. Should absolute fit statistics be calculated? Increases time for estimation. Currently supported engine is "mirt".}
 }
 \value{
 Returns a list of class wizirt.
-\emph{spec} is a list of information for the parsnip backend. printing spec prints a summary of the model run.
+\emph{spec} is a list of information for the parsnip backend. Printing spec prints a summary of the model run.
 \emph{elapsed} contains the time it took the model to run.
 \emph{fit} contains the model information:
 \itemize{
@@ -48,7 +51,7 @@ Estimate an IRT model using various engines
 }
 \examples{
 data("responses")
-my_model <- wizirt(data = responses[,-1], item_type = "2PL", tol = 1e-4, engine = "mirt")
+my_model <- wizirt(data = responses[, -1], item_type = "2PL", tol = 1e-4, engine = "mirt")
 print(my_model, type = "tech")
 print(my_model, type = "desc")
 print(my_model, type = "item")
